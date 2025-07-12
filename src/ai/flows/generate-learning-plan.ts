@@ -47,6 +47,11 @@ Your task is to analyze a user's learning goal and their English level to genera
 USER'S GOAL: "{{goal}}"
 USER'S LEVEL: "{{currentLevel}}"
 
+Crucially, the vocabulary you select MUST be appropriate for the user's level.
+- For a 'beginner', choose common, essential words.
+- For an 'intermediate' user, choose more nuanced or complex words.
+- For an 'advanced' user, choose specialized, idiomatic, or less common vocabulary.
+
 For each word, you must create a "connection" with the following fields:
 1.  **spanish**: The word in Spanish.
 2.  **english**: The corresponding word in English.

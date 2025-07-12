@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { Bot, Loader2, Send, Sparkles, Lightbulb, Volume2 } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription, CardFooter, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -29,7 +28,7 @@ export default function AssistantPage() {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!currentUser?.level) {
-        setError("Please select a user profile with a level first.");
+        setError("Please complete your profile by selecting a level first.");
         return;
     }
     setError(null);
@@ -78,7 +77,7 @@ export default function AssistantPage() {
               <Bot className="w-8 h-8 text-primary" />
               <div>
                 <CardTitle className="text-2xl font-headline">Tu Asistente de Aprendizaje</CardTitle>
-                <CardDescription>Hola, {currentUser.name}. Dime, ¿qué te gustaría aprender hoy para alcanzar tus metas?</CardDescription>
+                <CardDescription>Hola, {currentUser.name}. Tu nivel es {currentUser.level}. Dime, ¿qué te gustaría aprender hoy para alcanzar tus metas?</CardDescription>
               </div>
             </div>
           </CardHeader>
@@ -128,7 +127,7 @@ export default function AssistantPage() {
               {plan.connections.map((conn, index) => {
                 const wordKey = `${conn.english}-${index}`;
                 const audioState = audioStates[wordKey] || 'idle';
-                const textToSpeak = `In English: ${conn.english}. In Spanish: ${conn.spanish}. Remember this connection: ${conn.mnemonic}`;
+                const textToSpeak = `In English: ${conn.english}. Remember this connection: ${conn.mnemonic}`;
 
                 return (
                   <Card key={wordKey} className="overflow-hidden">
@@ -158,6 +157,11 @@ export default function AssistantPage() {
                              <p className="text-lg text-foreground/90 font-mono bg-muted px-3 py-2 rounded-md">
                                 {conn.phonetic_spelling}
                             </p>
+                        </div>
+                         <Separator/>
+                        <div>
+                            <h3 className="text-lg font-semibold mb-2 text-foreground/80">Explicación</h3>
+                            <p className="text-foreground/80 leading-relaxed">{conn.explanation}</p>
                         </div>
                          <Separator/>
                         <div>
