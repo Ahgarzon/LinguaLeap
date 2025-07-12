@@ -17,77 +17,77 @@ export type Topic = {
 
 export const topicsData: Topic[] = [
   {
-    name: 'Everyday Objects',
-    slug: 'everyday-objects',
-    description: 'Common items you see and use daily.',
+    name: 'Viajes',
+    slug: 'viajes',
+    description: 'Palabras esenciales para tu próxima aventura.',
     connections: [
       {
         id: 1,
-        spanish: 'Tenedor',
-        english: 'Fork',
-        mnemonic: '"Tenedor" sounds like "ten door". Imagine a fork with ten doors on it.',
-        explanation: 'The unusual image of a fork having ten tiny doors helps to link the sound of "tenedor" with its meaning, "fork".',
-        example: 'To eat the salad, I need a tenedor, not one with a "ten door" design, just a normal fork.',
-        slug: 'tenedor-fork'
+        spanish: 'Maleta',
+        english: 'Suitcase',
+        mnemonic: 'En mi maleta llevo un "sweet case" (estuche dulce) para los caramelos del viaje.',
+        explanation: 'Imagina que dentro de tu maleta, lo más importante que guardas es un estuche (case) lleno de dulces (sweet). La combinación "sweet case" suena muy parecido a "suitcase".',
+        example: 'Please, pack the "sweet case" in my suitcase before we leave.',
+        slug: 'maleta-suitcase'
       },
       {
         id: 2,
-        spanish: 'Cuchillo',
-        english: 'Knife',
-        mnemonic: '"Cuchillo" sounds like "coo-chee-yo". Imagine a pigeon (coo) on your cheek (chee) that you have to gently shoo away with a knife (yo!).',
-        explanation: 'This creates a short, memorable story that connects the sounds in "cuchillo" to the object, a knife.',
-        example: 'I saw a "coo" on my "chee", so "yo" used the cuchillo to cut the apple, not to scare the bird.',
-        slug: 'cuchillo-knife'
+        spanish: 'Boleto',
+        english: 'Ticket',
+        mnemonic: 'Para subir al avión, te "pican" (tick) el boleto.',
+        explanation: 'Asocia el sonido "tick" de ticket con la acción de que te "piquen" o perforen el boleto antes de embarcar.',
+        example: 'They have to "tick" your ticket at the gate.',
+        slug: 'boleto-ticket'
       },
     ],
   },
   {
-    name: 'Food & Dining',
-    slug: 'food-dining',
-    description: 'Vocabulary for the kitchen and your favorite meals.',
+    name: 'Trabajo',
+    slug: 'trabajo',
+    description: 'Vocabulario útil para el entorno profesional.',
     connections: [
       {
         id: 3,
-        spanish: 'Cebolla',
-        english: 'Onion',
-        mnemonic: '"Cebolla" sounds like "say boy-ya!". You shout "Boy-ya!" when you successfully chop an onion without crying.',
-        explanation: 'This links the triumphant shout "say boy-ya!" to the challenging task of cutting an onion, helping you remember "cebolla".',
-        example: 'After chopping the cebolla, I wanted to shout "say boy-ya!" because my eyes didn\'t water.',
-        slug: 'cebolla-onion'
+        spanish: 'Reunión',
+        english: 'Meeting',
+        mnemonic: 'En la reunión, el jefe te "mide" (meet) el rendimiento.',
+        explanation: 'Piensa que el propósito de una reunión de trabajo es "medir" tu desempeño. El sonido de "mide" en español se parece a "meet" en "meeting".',
+        example: 'In the next meeting, the boss will measure our performance.',
+        slug: 'reunion-meeting'
       },
       {
         id: 4,
-        spanish: 'Pan',
-        english: 'Bread',
-        mnemonic: 'Both "pan" (Spanish) and "pan" (English, for cooking) are used for making food. You bake bread in a pan.',
-        explanation: 'This uses a direct link between the Spanish word and an English word that sounds the same and is related in context (cooking).',
-        example: 'I will bake the pan (bread) in a frying pan.',
-        slug: 'pan-bread'
+        spanish: 'Correo',
+        english: 'Mail',
+        mnemonic: 'El correo de hoy trae "maíz" (mail).',
+        explanation: 'Imagina una carta o paquete que, en lugar de papeles, contiene granos de maíz. La palabra "maíz" suena casi idéntica a "mail".',
+        example: 'I received some corn (maíz) in the mail today.',
+        slug: 'correo-mail'
       },
     ]
   },
   {
-    name: 'Travel & Directions',
-    slug: 'travel-directions',
-    description: 'Essential words for navigating a new place.',
+    name: 'Tecnología',
+    slug: 'tecnologia',
+    description: 'Palabras para el mundo digital y los gadgets.',
     connections: [
       {
         id: 5,
-        spanish: 'Derecha',
-        english: 'Right',
-        mnemonic: '"Derecha" sounds like "the wretch". The wicked witch is always on the right side of the path.',
-        explanation: 'This creates a character-based story to associate "derecha" with the direction "right".',
-        example: 'Follow the path, but be careful of "the wretch" on the derecha (right) side.',
-        slug: 'derecha-right'
+        spanish: 'Pantalla',
+        english: 'Screen',
+        mnemonic: '¡Qué "escándalo" (screen) se ve en esa pantalla!',
+        explanation: 'Asocia el sonido de "screen" con la palabra "escándalo", imaginando una escena muy llamativa en una pantalla.',
+        example: 'What an "escándalo" is showing on that screen!',
+        slug: 'pantalla-screen'
       },
       {
         id: 6,
-        spanish: 'Izquierda',
-        english: 'Left',
-        mnemonic: '"Izquierda" sounds like "is scary". The left path is always the scary one in horror movies.',
-        explanation: 'This mnemonic uses a common movie trope to connect the sound of "izquierda" with the direction "left".',
-        example: 'He said the path to the left "is scary" and dark, and it was the one on the izquierda (left).',
-        slug: 'izquierda-left'
+        spanish: 'Teclado',
+        english: 'Keyboard',
+        mnemonic: 'Con el teclado, "clavo" (key) las letras en el "tablero" (board).',
+        explanation: 'Descompón "keyboard" en "key" (llave/clavo) y "board" (tablero). Imagina que cada tecla es un clavo que pones en un tablero.',
+        example: 'I use the keyboard to put the "key" on the "board".',
+        slug: 'teclado-keyboard'
       },
     ]
   },
