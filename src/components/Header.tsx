@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { BookOpen, Dumbbell, Feather, User, Users, LogOut } from 'lucide-react';
+import { BookOpen, Dumbbell, Feather, User, Users, LogOut, MessageCircle } from 'lucide-react';
 import { Button } from './ui/button';
 import { useUser } from '@/hooks/use-user';
 import {
@@ -34,8 +34,8 @@ export function Header() {
                         href="/"
                         className="transition-colors hover:text-foreground/80 text-foreground/60"
                         >
-                        <BookOpen className="inline-block h-4 w-4 mr-1" />
-                        Aprender
+                        <MessageCircle className="inline-block h-4 w-4 mr-1" />
+                        Asistente
                         </Link>
                     </Button>
                     <Button variant="ghost" asChild>

@@ -1,9 +1,9 @@
 import { getConnectionBySlug } from '@/lib/data';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Lightbulb } from 'lucide-react';
+import { ArrowLeft, Lightbulb, Ear } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { GenerateExample } from '@/components/GenerateExample';
 import { PronunciationPlayer } from '@/components/PronunciationPlayer';
@@ -52,6 +52,21 @@ export default function ConnectionPage({ params }: { params: { topic: string; sl
           </div>
           
           <Separator className="my-6" />
+
+          {connection.phonetic_spelling && (
+            <>
+              <div>
+                <h3 className="flex items-center text-lg font-semibold mb-2 text-foreground/80">
+                  <Ear className="mr-2 h-5 w-5 text-accent" />
+                  Pronunciación Figurada
+                </h3>
+                <p className="text-lg text-foreground/90 font-mono bg-muted px-3 py-2 rounded-md">
+                  {connection.phonetic_spelling}
+                </p>
+              </div>
+              <Separator className="my-6" />
+            </>
+          )}
 
           <div>
             <h3 className="text-lg font-semibold mb-2">Explanation</h3>
