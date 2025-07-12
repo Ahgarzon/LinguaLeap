@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Bot, Loader2, Send, Sparkles, Lightbulb, Volume2 } from 'lucide-react';
@@ -51,7 +52,7 @@ export default function AssistantPage() {
       });
 
     }
-  }, [plan, addTopicToCurrentUser, currentUser?.level, toast]);
+  }, [plan, addTopicToCurrentUser, currentUser?.level]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
