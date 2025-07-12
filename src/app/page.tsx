@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Utensils, Home as HomeIcon, Plane, Briefcase, Laptop, ArrowRight, BrainCircuit, School, Building, MessageCircle, Loader2, Send, Bot, User, Sparkles } from 'lucide-react';
 import { topicsData, type Topic, getTopicBySlug } from '@/lib/data';
-import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardDescription, CardFooter, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useUser } from '@/hooks/use-user';
@@ -130,9 +130,9 @@ export default function Home() {
                       </div>
                       <CardDescription className='italic'>"{topic.reason}"</CardDescription>
                     </CardHeader>
-                    <div className="flex-grow p-6 pt-0">
+                    <CardContent className="flex-grow pt-0">
                       <p className="text-sm text-muted-foreground">{topic.description}</p>
-                    </div>
+                    </CardContent>
                     <CardFooter className="flex justify-between items-center pt-4">
                       <Badge variant="secondary">{topic.connections.length} Conexiones</Badge>
                       <Button asChild>
