@@ -37,9 +37,9 @@ export default function Home() {
     <div className="container mx-auto py-8 px-4 md:px-6">
       <section className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold font-headline text-primary mb-2">¡Bienvenido a LinguaLeap, {currentUser.name}!</h1>
-        <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+        <div className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
           Tu nivel es <Badge className="text-lg align-middle">{currentUser.level}</Badge>. ¡Aquí están tus temas para hoy!
-        </p>
+        </div>
       </section>
 
       <section>
