@@ -1,0 +1,58 @@
+import { getConnectionBySlug } from '@/lib/data';
+import { notFound } from 'next/navigation';
+import Link from 'next/link';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft, Lightbulb } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
+import { GenerateExample } from '@/components/GenerateExample';
+
+export default function ConnectionPage({ params }: { params: { topic: string; slug: string } }) {
+  const connectionData = getConnectionBySlug(params.topic, params.slug);
+
+  if (!connectionData) {
+    notFound();
+  }
+
+  const { topicName, ...connection } = connectionData;
+
+  return (
+    <div className="container mx-auto max-w-3xl py-8 px-4 md:px-6">
+      <div className="mb-8">
+        <Button variant="ghost" asChild>
+          <Link href={`/connections/${params.topic}`}>
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to {topicName}
+          </Link>
+        </Button>
+      </div>
+
+      <Card className="overflow-hidden">
+        <CardHeader className="bg-muted/30">
+          <p className="text-sm text-muted-foreground">{connection.spanish}</p>
+          <CardTitle className="text-4xl font-headline text-primary">{connection.english}</CardTitle>
+        </CardHeader>
+        <CardContent className="p-6">
+          <div className="mb-6">
+            <h3 className="flex items-center text-lg font-semibold mb-2 text-primary-foreground/80">
+              <Lightbulb className="mr-2 h-5 w-5 text-accent" />
+              Mnemonic Connection
+            </h3>
+            <p className="text-lg text-foreground/90 italic">"{connection.mnemonic}"</p>
+          </div>
+          
+          <Separator className="my-6" />
+
+          <div>
+            <h3 className="text-lg font-semibold mb-2">Explanation</h3>
+            <p className="text-foreground/80 leading-relaxed">{connection.explanation}</p>
+          </div>
+          
+          <Separator className="my-6" />
+
+          <GenerateExample connection={connection} />
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
