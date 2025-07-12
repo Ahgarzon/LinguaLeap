@@ -3,7 +3,7 @@
 import { generateExampleSentence } from '@/ai/flows/generate-example-sentence';
 import { generateLearningPlan, type GenerateLearningPlanOutput } from '@/ai/flows/generate-learning-plan';
 import { textToSpeech } from '@/ai/flows/text-to-speech';
-import type { Connection, UserLevel } from '@/lib/data';
+import type { Connection, Topic, UserLevel } from '@/lib/data';
 
 export async function getAIExample(connection: Omit<Connection, 'id' | 'slug' | 'phonetic_spelling' | 'level'>) {
   try {

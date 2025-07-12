@@ -1,29 +1,57 @@
 'use client';
 
 import { Bot, Loader2, Send, Sparkles, Lightbulb, Volume2 } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardDescription, CardFooter, CardContent } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useUser } from '@/hooks/use-user';
 import { WelcomeWizard } from '@/components/WelcomeWizard';
-import { FormEvent, useState, useTransition, useRef } from 'react';
+import { FormEvent, useState, useTransition, useRef, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { getLearningPlan, getPronunciation } from '@/app/actions';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import type { GenerateLearningPlanOutput } from '@/ai/flows/generate-learning-plan';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
 
 export default function AssistantPage() {
-  const { currentUser } = useUser();
+  const { currentUser, addTopicToCurrentUser } = useUser();
   const [goal, setGoal] = useState('');
   const [isPending, startTransition] = useTransition();
   const [plan, setPlan] = useState<GenerateLearningPlanOutput | null>(null);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
+  const router = useRouter();
 
   // Pronunciation state
   const [audioStates, setAudioStates] = useState<{ [key: string]: 'idle' | 'loading' | 'playing' }>({});
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  
+  // Effect to save the plan once it's generated
+  useEffect(() => {
+    if (plan && addTopicToCurrentUser) {
+      const { response, topicName, topicDescription, topicSlug, connections } = plan;
+
+      const newTopic = {
+        name: topicName,
+        slug: topicSlug,
+        description: topicDescription,
+        connections: connections.map((conn, index) => ({
+          ...conn,
+          id: Date.now() + index, // Ensure unique ID
+          slug: `${topicSlug}-${conn.english.toLowerCase().replace(/ /g, '-')}`,
+          level: currentUser?.level || 'beginner',
+        })),
+      };
+      
+      addTopicToCurrentUser(newTopic);
+      toast({
+        title: '¡Tema Guardado!',
+        description: `El tema "${topicName}" ha sido añadido a tu página de "Aprende".`,
+      });
+
+    }
+  }, [plan, addTopicToCurrentUser, currentUser?.level, toast]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -86,7 +114,7 @@ export default function AssistantPage() {
               <Input
                 value={goal}
                 onChange={(e) => setGoal(e.target.value)}
-                placeholder="Ej: Tengo una entrevista de trabajo para ingeniero de software..."
+                placeholder="Ej: vocabulario sobre el ejército para una presentación"
                 className="bg-background"
                 disabled={isPending}
               />
@@ -121,7 +149,7 @@ export default function AssistantPage() {
             </AlertDescription>
           </Alert>
 
-          <h2 className="text-3xl font-bold font-headline mb-8 text-center">Vocabulario Recomendado</h2>
+          <h2 className="text-3xl font-bold font-headline mb-8 text-center">Vocabulario Recomendado para "{plan.topicName}"</h2>
 
             <div className="space-y-6">
               {plan.connections.map((conn, index) => {
@@ -174,9 +202,12 @@ export default function AssistantPage() {
               })}
             </div>
           
-          <div className="text-center mt-8">
+          <div className="text-center mt-8 space-x-4">
             <Button variant="outline" onClick={() => { setPlan(null); setGoal(''); }}>
-                Empezar una nueva conversación
+                Hacer otra consulta
+            </Button>
+            <Button onClick={() => router.push('/')}>
+                Ir a mis temas
             </Button>
           </div>
         </section>

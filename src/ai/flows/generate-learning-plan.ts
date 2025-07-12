@@ -19,6 +19,9 @@ export type GenerateLearningPlanInput = z.infer<typeof GenerateLearningPlanInput
 
 const GenerateLearningPlanOutputSchema = z.object({
   response: z.string().describe('A friendly, conversational response to the user summarizing the suggestions.'),
+  topicName: z.string().describe("A short, relevant name for the topic generated based on the user's goal (e.g., 'Job Interview Prep', 'Cooking Vocabulary')."),
+  topicSlug: z.string().describe("A URL-friendly slug for the topic name (e.g., 'job-interview-prep', 'cooking-vocabulary')."),
+  topicDescription: z.string().describe("A brief, one-sentence description of the topic."),
   connections: z.array(z.object({
     spanish: z.string().describe('The word in Spanish.'),
     english: z.string().describe('The word in English.'),
@@ -42,12 +45,17 @@ const prompt = ai.definePrompt({
   output: {schema: GenerateLearningPlanOutputSchema},
   prompt: `You are an expert and creative language learning assistant for an app called LinguaLeap. Your specialty is creating personalized vocabulary plans with powerful mnemonic devices to connect Spanish and English words.
 
-Your task is to analyze a user's learning goal and their English level to generate a custom list of 5 to 7 relevant vocabulary words.
+Your task is to analyze a user's learning goal and their English level to generate a custom vocabulary list and a relevant topic name for it.
 
 USER'S GOAL: "{{goal}}"
 USER'S LEVEL: "{{currentLevel}}"
 
-Crucially, the vocabulary you select MUST be appropriate for the user's level.
+First, based on the user's goal, generate a concise and relevant topic name, slug, and description.
+- topicName: A short name for the topic.
+- topicSlug: a URL-friendly version of the name.
+- topicDescription: A one-sentence description.
+
+Next, generate a list of 5 to 7 relevant vocabulary words. Crucially, the vocabulary you select MUST be appropriate for the user's level.
 - For a 'beginner', choose common, essential words.
 - For an 'intermediate' user, choose more nuanced or complex words.
 - For an 'advanced' user, choose specialized, idiomatic, or less common vocabulary.

@@ -1,5 +1,7 @@
+'use client';
+
 import { getConnectionBySlug } from '@/lib/data';
-import { notFound } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,9 +9,14 @@ import { ArrowLeft, Lightbulb, Ear } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { GenerateExample } from '@/components/GenerateExample';
 import { PronunciationPlayer } from '@/components/PronunciationPlayer';
+import { useUser } from '@/hooks/use-user';
 
-export default function ConnectionPage({ params }: { params: { topic: string; slug: string } }) {
-  const connectionData = getConnectionBySlug(params.topic, params.slug);
+export default function ConnectionPage() {
+  const params = useParams<{ topic: string; slug: string }>();
+  const { currentUser } = useUser();
+  
+  // Pass the user's topics to the data fetching function
+  const connectionData = getConnectionBySlug(params.topic, params.slug, currentUser?.topics);
 
   if (!connectionData) {
     notFound();

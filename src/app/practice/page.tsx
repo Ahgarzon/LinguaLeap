@@ -1,9 +1,19 @@
+'use client';
+
 import { getAllConnections } from '@/lib/data';
 import { Quiz } from '@/components/Quiz';
 import { Card, CardContent } from '@/components/ui/card';
+import { useUser } from '@/hooks/use-user';
+import { WelcomeWizard } from '@/components/WelcomeWizard';
 
 export default function PracticePage() {
-  const connections = getAllConnections();
+  const { currentUser } = useUser();
+
+  if (!currentUser) {
+    return <WelcomeWizard />;
+  }
+  
+  const connections = getAllConnections(currentUser.topics);
   
   return (
     <div className="container mx-auto max-w-2xl py-8 px-4 md:px-6">
@@ -14,7 +24,7 @@ export default function PracticePage() {
       {connections.length < 4 ? (
         <Card>
             <CardContent className="p-6 text-center">
-                <p className="text-muted-foreground">More connections need to be added to the library before you can practice. Please check back later!</p>
+                <p className="text-muted-foreground">You need at least 4 connections in your topics to practice. Try adding more with the assistant!</p>
             </CardContent>
         </Card>
       ) : (

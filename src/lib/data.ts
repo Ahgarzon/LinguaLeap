@@ -124,10 +124,10 @@ export const topicsData: Topic[] = [
         id: 202,
         spanish: 'Apalancamiento',
         english: 'Leverage',
-        mnemonic: 'Con una buena "leva" (lever), "envejeces" (age) con más riqueza.',
+        mnemonic: 'Usa una "leva" (lever) para levantar tu "era" (age) de prosperidad.',
         phonetic_spelling: 'le-ve-redch',
-        explanation: 'Descompón "leverage" en "lever" (palanca) y "age" (edad). Imagina que usar una palanca financiera te permite tener una mejor vejez.',
-        example: 'Use financial leverage wisely to secure your old age.',
+        explanation: 'Descompón "leverage" en "lever" (palanca) y "age" (era). Imagina usar una palanca financiera para iniciar una nueva era de éxito en los negocios.',
+        example: 'Use financial leverage wisely to start a new age of prosperity.',
         slug: 'apalancamiento-leverage',
         level: 'advanced'
       },
@@ -175,10 +175,10 @@ export const topicsData: Topic[] = [
         id: 203,
         spanish: 'Ancho de Banda',
         english: 'Bandwidth',
-        mnemonic: 'La "banda" de música necesita un escenario "ancho" (width) para todos sus datos.',
+        mnemonic: 'La "banda" de rock necesita un escenario "ancho" (width) para transmitir todos sus datos.',
         phonetic_spelling: 'band-widz',
-        explanation: 'Imagina una banda de música ("band") que necesita un escenario muy "ancho" ("width") para poder transmitir toda su música (datos). Un escenario más ancho permite que más datos fluyan.',
-        example: 'The rock band needs more stage width to handle this much data, we need more bandwidth.',
+        explanation: 'Imagina una "banda" de música que necesita un escenario muy "ancho" ("width") para poder transmitir toda su música (datos) sin problemas. Un escenario más ancho permite que más datos fluyan, al igual que el ancho de banda.',
+        example: 'The rock band needs more stage width to stream their concert; we need more bandwidth.',
         slug: 'ancho-de-banda-bandwidth',
         level: 'advanced'
       },
@@ -393,10 +393,11 @@ export const topicsData: Topic[] = [
   }
 ];
 
-export const getAllConnections = () => topicsData.flatMap(topic => topic.connections);
-export const getTopicBySlug = (slug: string) => topicsData.find(topic => topic.slug === slug);
-export const getConnectionBySlug = (topicSlug: string, connectionSlug: string) => {
-  const topic = getTopicBySlug(topicSlug);
+export const getAllConnections = (userTopics?: Topic[]) => (userTopics || topicsData).flatMap(topic => topic.connections);
+export const getTopicBySlug = (slug: string, userTopics?: Topic[]) => (userTopics || topicsData).find(topic => topic.slug === slug);
+export const getConnectionBySlug = (topicSlug: string, connectionSlug: string, userTopics?: Topic[]) => {
+  const sourceTopics = userTopics || topicsData;
+  const topic = getTopicBySlug(topicSlug, sourceTopics);
   if (!topic) return null;
   const connection = topic.connections.find(conn => conn.slug === connectionSlug);
   if (!connection) return null;

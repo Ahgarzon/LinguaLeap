@@ -1,6 +1,8 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import type { Topic } from '@/lib/data';
+import { topicsData } from '@/lib/data';
 
 export type UserLevel = 'beginner' | 'intermediate' | 'advanced';
 
@@ -8,6 +10,7 @@ export interface UserProfile {
   id: number;
   name: string;
   level: UserLevel | null;
+  topics: Topic[];
 }
 
 interface UserContextType {
@@ -17,6 +20,7 @@ interface UserContextType {
   updateCurrentUser: (updates: Partial<UserProfile>) => void;
   addUser: (name: string) => UserProfile;
   clearCurrentUser: () => void;
+  addTopicToCurrentUser: (topic: Topic) => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -78,6 +82,13 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         }
     }
   }
+
+  const addTopicToCurrentUser = (topic: Topic) => {
+    if (currentUser) {
+        const newTopics = [...(currentUser.topics || []), topic];
+        updateCurrentUser({ topics: newTopics });
+    }
+  }
   
   const clearCurrentUser = () => {
     setCurrentUser(null);
@@ -88,6 +99,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       id: Date.now(),
       name,
       level: null,
+      topics: topicsData, // Start with default topics
     };
     const updatedUsers = [...users, newUser];
     setUsers(updatedUsers);
@@ -95,7 +107,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     return newUser;
   };
 
-  const value = { users, currentUser, setCurrentUser, updateCurrentUser, addUser, clearCurrentUser };
+  const value = { users, currentUser, setCurrentUser, updateCurrentUser, addUser, clearCurrentUser, addTopicToCurrentUser };
 
   return (
     <UserContext.Provider value={value}>

@@ -1,12 +1,19 @@
+'use client';
+
 import Link from 'next/link';
 import { getTopicBySlug } from '@/lib/data';
-import { notFound } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { useUser } from '@/hooks/use-user';
 
-export default function TopicPage({ params }: { params: { topic: string } }) {
-  const topic = getTopicBySlug(params.topic);
+export default function TopicPage() {
+  const params = useParams<{ topic: string }>();
+  const { currentUser } = useUser();
+  
+  // Pass the user's topics to the data fetching function
+  const topic = getTopicBySlug(params.topic, currentUser?.topics);
 
   if (!topic) {
     notFound();
