@@ -1,8 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { Utensils, Home as HomeIcon, Plane, Briefcase, Laptop, ArrowRight } from 'lucide-react';
-import { topicsData } from '@/lib/data';
+import { Utensils, Home as HomeIcon, Plane, Briefcase, Laptop, ArrowRight, BrainCircuit, School, Building } from 'lucide-react';
+import { topicsData, type Topic } from '@/lib/data';
 import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -10,33 +10,46 @@ import { useUser } from '@/hooks/use-user';
 import { WelcomeWizard } from '@/components/WelcomeWizard';
 
 const topicIcons: { [key: string]: React.ElementType } = {
-  trabajo: Briefcase,
   viajes: Plane,
+  trabajo: Briefcase,
   tecnologia: Laptop,
   comida: Utensils,
   casa: HomeIcon,
+  negocios: Building,
+  academia: School,
+  'conceptos-abstractos': BrainCircuit,
 };
 
 export default function Home() {
   const { currentUser } = useUser();
 
-  if (!currentUser) {
+  if (!currentUser || !currentUser.level) {
     return <WelcomeWizard />;
   }
   
+  const filteredTopics = topicsData.map(topic => ({
+    ...topic,
+    connections: topic.connections.filter(conn => 
+      currentUser.level === 'advanced' ? ['beginner', 'intermediate', 'advanced'].includes(conn.level) :
+      currentUser.level === 'intermediate' ? ['beginner', 'intermediate'].includes(conn.level) :
+      conn.level === 'beginner'
+    )
+  })).filter(topic => topic.connections.length > 0);
+
+
   return (
     <div className="container mx-auto py-8 px-4 md:px-6">
       <section className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-bold font-headline text-primary mb-2">¡Bienvenido a LinguaLeap, {currentUser.name}!</h1>
         <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-          Desbloquea la fluidez en inglés con divertidas e inolvidables conexiones mnemotécnicas español-inglés.
+          Tu nivel es <Badge className="text-lg align-middle">{currentUser.level}</Badge>. ¡Aquí están tus temas para hoy!
         </p>
       </section>
 
       <section>
         <h2 className="text-3xl font-bold font-headline mb-8 text-center">Elige un Tema para Empezar</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {topicsData.map((topic) => {
+          {filteredTopics.map((topic: Topic) => {
             const Icon = topicIcons[topic.slug] || HomeIcon;
             return (
               <Card key={topic.slug} className="flex flex-col hover:shadow-lg transition-shadow duration-300 bg-card">

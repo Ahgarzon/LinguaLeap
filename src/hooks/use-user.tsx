@@ -2,17 +2,20 @@
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 
+export type UserLevel = 'beginner' | 'intermediate' | 'advanced';
+
 export interface UserProfile {
   id: number;
   name: string;
-  level?: 'beginner' | 'intermediate' | 'advanced';
+  level: UserLevel | null;
 }
 
 interface UserContextType {
   users: UserProfile[];
   currentUser: UserProfile | null;
   setCurrentUser: (user: UserProfile) => void;
-  addUser: (name: string) => void;
+  updateCurrentUser: (updates: Partial<UserProfile>) => void;
+  addUser: (name: string) => UserProfile;
   clearCurrentUser: () => void;
 }
 
@@ -39,7 +42,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       }
     } catch (error) {
       console.error("Failed to parse user data from localStorage", error);
-      // Clear corrupted data
       localStorage.removeItem(USERS_STORAGE_KEY);
       localStorage.removeItem(CURRENT_USER_STORAGE_KEY);
     }
@@ -52,31 +54,48 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [users, isInitialized]);
 
-  const setCurrentUser = (user: UserProfile) => {
+  const setCurrentUser = (user: UserProfile | null) => {
     setCurrentUserInternal(user);
     if (isInitialized) {
-      localStorage.setItem(CURRENT_USER_STORAGE_KEY, JSON.stringify(user));
+        if (user) {
+            localStorage.setItem(CURRENT_USER_STORAGE_KEY, JSON.stringify(user));
+        } else {
+            localStorage.removeItem(CURRENT_USER_STORAGE_KEY);
+        }
     }
   };
-  
-  const clearCurrentUser = () => {
-    setCurrentUserInternal(null);
-    if(isInitialized){
-        localStorage.removeItem(CURRENT_USER_STORAGE_KEY);
+
+  const updateCurrentUser = (updates: Partial<UserProfile>) => {
+    if (currentUser) {
+        const updatedUser = { ...currentUser, ...updates };
+        setCurrentUser(updatedUser);
+        
+        const userIndex = users.findIndex(u => u.id === updatedUser.id);
+        if (userIndex !== -1) {
+            const updatedUsers = [...users];
+            updatedUsers[userIndex] = updatedUser;
+            setUsers(updatedUsers);
+        }
     }
   }
+  
+  const clearCurrentUser = () => {
+    setCurrentUser(null);
+  }
 
-  const addUser = (name: string) => {
+  const addUser = (name: string): UserProfile => {
     const newUser: UserProfile = {
       id: Date.now(),
       name,
+      level: null,
     };
     const updatedUsers = [...users, newUser];
     setUsers(updatedUsers);
     setCurrentUser(newUser);
+    return newUser;
   };
 
-  const value = { users, currentUser, setCurrentUser, addUser, clearCurrentUser };
+  const value = { users, currentUser, setCurrentUser, updateCurrentUser, addUser, clearCurrentUser };
 
   return (
     <UserContext.Provider value={value}>

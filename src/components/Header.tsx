@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { BookOpen, Dumbbell, Feather, User, Users } from 'lucide-react';
+import { BookOpen, Dumbbell, Feather, User, Users, LogOut } from 'lucide-react';
 import { Button } from './ui/button';
 import { useUser } from '@/hooks/use-user';
 import {
@@ -12,6 +12,7 @@ import {
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
 import { WelcomeWizard } from './WelcomeWizard';
+import { Badge } from './ui/badge';
   
 
 export function Header() {
@@ -34,7 +35,7 @@ export function Header() {
                         className="transition-colors hover:text-foreground/80 text-foreground/60"
                         >
                         <BookOpen className="inline-block h-4 w-4 mr-1" />
-                        Browse
+                        Aprender
                         </Link>
                     </Button>
                     <Button variant="ghost" asChild>
@@ -43,7 +44,7 @@ export function Header() {
                         className="transition-colors hover:text-foreground/80 text-foreground/60"
                         >
                         <Dumbbell className="inline-block h-4 w-4 mr-1" />
-                        Practice
+                        Practicar
                         </Link>
                     </Button>
                 </nav>
@@ -60,11 +61,14 @@ export function Header() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel>Hola, {currentUser.name}</DropdownMenuLabel>
+                <DropdownMenuLabel className='flex flex-col space-y-1'>
+                    <span>Hola, {currentUser.name}</span>
+                    {currentUser.level && <Badge variant="secondary" className="w-fit">{currentUser.level}</Badge>}
+                </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={clearCurrentUser}>
                     <Users className="mr-2 h-4 w-4" />
-                    <span>Switch User</span>
+                    <span>Cambiar Perfil</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
