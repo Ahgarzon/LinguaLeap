@@ -36,7 +36,7 @@ export function GenerateExample({ connection }: GenerateExampleProps) {
     <div>
       <h3 className="text-lg font-semibold mb-2">Example Sentence</h3>
       <Alert className="bg-primary/10 border-primary/20">
-        <AlertDescription className="text-lg text-primary-foreground/90 italic">
+        <AlertDescription className="text-lg text-primary italic">
           "{example}"
         </AlertDescription>
       </Alert>
@@ -45,7 +45,7 @@ export function GenerateExample({ connection }: GenerateExampleProps) {
           {isPending ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
-            <Sparkles className="mr-2 h-4 w-4 text-accent-foreground" />
+            <Sparkles className="mr-2 h-4 w-4 text-accent" />
           )}
           {isPending ? 'Generating...' : 'Generate Another'}
         </Button>
