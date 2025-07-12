@@ -18,14 +18,17 @@ import { Avatar, AvatarFallback } from './ui/avatar';
 import { PlacementTest } from './PlacementTest';
 
 export function WelcomeWizard({ triggerButton = false }: { triggerButton?: boolean }) {
-  const { users, setCurrentUser, addUser, currentUser } = useUser();
+  const { users, setCurrentUser, addUser, currentUser, updateCurrentUser } = useUser();
   const [isOpen, setIsOpen] = useState(false);
-  const [view, setView] = useState<'list' | 'new' | 'test'>('list');
+  const [view, setView] = useState<'list' | 'new' | 'language' | 'test'>('list');
   const [newUserName, setNewUserName] = useState('');
+  const [nativeLanguage, setNativeLanguage] = useState('');
 
   const handleSelectUser = (user: UserProfile) => {
     setCurrentUser(user);
-    if (!user.level) {
+    if (!user.nativeLanguage) {
+      setView('language');
+    } else if (!user.level) {
       setView('test');
     } else {
       setIsOpen(false);
@@ -36,7 +39,15 @@ export function WelcomeWizard({ triggerButton = false }: { triggerButton?: boole
     if (newUserName.trim()) {
       addUser(newUserName.trim());
       setNewUserName('');
-      setView('test'); // Go to placement test after creating user
+      setView('language');
+    }
+  };
+
+  const handleSetLanguage = () => {
+    if (nativeLanguage.trim() && currentUser) {
+      updateCurrentUser({ nativeLanguage: nativeLanguage.trim() });
+      setNativeLanguage('');
+      setView('test');
     }
   };
   
@@ -58,6 +69,35 @@ export function WelcomeWizard({ triggerButton = false }: { triggerButton?: boole
     switch (view) {
       case 'test':
         return <PlacementTest onComplete={handleTestComplete} />;
+      case 'language':
+        return (
+          <>
+            <DialogHeader>
+              <DialogTitle>Idioma Nativo</DialogTitle>
+              <DialogDescription>
+                ¿Cuál es tu idioma nativo? Esto nos ayudará a crear mejores mnemotecnias para ti.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="language" className="text-right">
+                  Idioma
+                </Label>
+                <Input
+                  id="language"
+                  value={nativeLanguage}
+                  onChange={(e) => setNativeLanguage(e.target.value)}
+                  className="col-span-3"
+                  placeholder="E.g. Español"
+                  onKeyDown={(e) => e.key === 'Enter' && handleSetLanguage()}
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button onClick={handleSetLanguage}>Guardar y Continuar</Button>
+            </DialogFooter>
+          </>
+        );
       case 'new':
         return (
           <>
@@ -129,10 +169,14 @@ export function WelcomeWizard({ triggerButton = false }: { triggerButton?: boole
     </DialogContent>
   );
 
-  // If user exists but level is not set, force the dialog open to the test
-  if (currentUser && !currentUser.level && !isOpen && !triggerButton) {
-    setIsOpen(true);
-    setView('test');
+  // If user exists but something is missing, force the dialog open
+  if (currentUser && (!currentUser.nativeLanguage || !currentUser.level) && !isOpen && !triggerButton) {
+      if (!currentUser.nativeLanguage) {
+          setView('language');
+      } else {
+          setView('test');
+      }
+      setIsOpen(true);
   }
 
 

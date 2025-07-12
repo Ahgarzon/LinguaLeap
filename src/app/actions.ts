@@ -3,7 +3,7 @@
 import { generateExampleSentence } from '@/ai/flows/generate-example-sentence';
 import { generateLearningPlan, type GenerateLearningPlanOutput } from '@/ai/flows/generate-learning-plan';
 import { textToSpeech } from '@/ai/flows/text-to-speech';
-import type { Connection, Topic, UserLevel } from '@/lib/data';
+import type { Connection, UserLevel } from '@/lib/data';
 
 export async function getAIExample(connection: Omit<Connection, 'id' | 'slug' | 'phonetic_spelling' | 'level'>) {
   try {
@@ -29,12 +29,15 @@ export async function getPronunciation(text: string) {
   }
 }
 
-export async function getLearningPlan(goal: string, level: UserLevel): Promise<{ success: boolean; data?: GenerateLearningPlanOutput; error?: string }> {
+export async function getLearningPlan(goal: string, level: UserLevel, nativeLanguage: string): Promise<{ success: boolean; data?: GenerateLearningPlanOutput; error?: string }> {
     if (!goal) {
         return { success: false, error: "Please provide a learning goal." };
     }
+    if (!nativeLanguage) {
+        return { success: false, error: "Please set your native language in your profile first." };
+    }
     try {
-        const result = await generateLearningPlan({ goal, currentLevel: level });
+        const result = await generateLearningPlan({ goal, currentLevel: level, nativeLanguage });
         return { success: true, data: result };
     } catch (error) {
         console.error('Learning plan generation failed:', error);

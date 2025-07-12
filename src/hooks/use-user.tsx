@@ -9,6 +9,7 @@ export type UserLevel = 'beginner' | 'intermediate' | 'advanced';
 export interface UserProfile {
   id: number;
   name: string;
+  nativeLanguage: string;
   level: UserLevel | null;
   topics: Topic[];
 }
@@ -16,7 +17,7 @@ export interface UserProfile {
 interface UserContextType {
   users: UserProfile[];
   currentUser: UserProfile | null;
-  setCurrentUser: (user: UserProfile) => void;
+  setCurrentUser: (user: UserProfile | null) => void;
   updateCurrentUser: (updates: Partial<UserProfile>) => void;
   addUser: (name: string) => UserProfile;
   clearCurrentUser: () => void;
@@ -98,6 +99,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     const newUser: UserProfile = {
       id: Date.now(),
       name,
+      nativeLanguage: '',
       level: null,
       topics: topicsData, // Start with default topics
     };

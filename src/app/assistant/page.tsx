@@ -30,8 +30,8 @@ export default function AssistantPage() {
   
   // Effect to save the plan once it's generated
   useEffect(() => {
-    if (plan && addTopicToCurrentUser) {
-      const { response, topicName, topicDescription, topicSlug, connections } = plan;
+    if (plan && addTopicToCurrentUser && currentUser) {
+      const { topicName, topicDescription, topicSlug, connections } = plan;
 
       const newTopic = {
         name: topicName,
@@ -41,7 +41,7 @@ export default function AssistantPage() {
           ...conn,
           id: Date.now() + index, // Ensure unique ID
           slug: `${topicSlug}-${conn.english.toLowerCase().replace(/ /g, '-')}`,
-          level: currentUser?.level || 'beginner',
+          level: currentUser.level || 'beginner',
         })),
       };
       
@@ -52,18 +52,18 @@ export default function AssistantPage() {
       });
 
     }
-  }, [plan, addTopicToCurrentUser, currentUser?.level]);
+  }, [plan, addTopicToCurrentUser, currentUser]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (!currentUser?.level) {
-        setError("Please complete your profile by selecting a level first.");
+    if (!currentUser?.level || !currentUser?.nativeLanguage) {
+        setError("Please complete your profile by selecting a level and native language first.");
         return;
     }
     setError(null);
     setPlan(null);
     startTransition(async () => {
-      const result = await getLearningPlan(goal, currentUser.level!);
+      const result = await getLearningPlan(goal, currentUser.level!, currentUser.nativeLanguage!);
       if(result.success && result.data) {
         setPlan(result.data);
       } else {
@@ -92,7 +92,7 @@ export default function AssistantPage() {
   };
 
 
-  if (!currentUser || !currentUser.level) {
+  if (!currentUser || !currentUser.level || !currentUser.nativeLanguage) {
     return <WelcomeWizard />;
   }
 
