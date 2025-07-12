@@ -13,10 +13,14 @@ import {
   } from "@/components/ui/dropdown-menu"
 import { WelcomeWizard } from './WelcomeWizard';
 import { Badge } from './ui/badge';
+import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/utils';
   
 
 export function Header() {
     const { currentUser, clearCurrentUser } = useUser();
+    const pathname = usePathname();
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 max-w-screen-2xl items-center justify-between">
@@ -32,7 +36,16 @@ export function Header() {
                     <Button variant="ghost" asChild>
                         <Link
                         href="/"
-                        className="transition-colors hover:text-foreground/80 text-foreground/60"
+                        className={cn("transition-colors hover:text-foreground/80", pathname === '/' ? 'text-foreground' : 'text-foreground/60')}
+                        >
+                        <BookOpen className="inline-block h-4 w-4 mr-1" />
+                        Aprende
+                        </Link>
+                    </Button>
+                    <Button variant="ghost" asChild>
+                        <Link
+                        href="/assistant"
+                        className={cn("transition-colors hover:text-foreground/80", pathname === '/assistant' ? 'text-foreground' : 'text-foreground/60')}
                         >
                         <MessageCircle className="inline-block h-4 w-4 mr-1" />
                         Asistente
@@ -41,7 +54,7 @@ export function Header() {
                     <Button variant="ghost" asChild>
                         <Link
                         href="/practice"
-                        className="transition-colors hover:text-foreground/80 text-foreground/60"
+                        className={cn("transition-colors hover:text-foreground/80", pathname === '/practice' ? 'text-foreground' : 'text-foreground/60')}
                         >
                         <Dumbbell className="inline-block h-4 w-4 mr-1" />
                         Practicar
