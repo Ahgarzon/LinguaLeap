@@ -1,11 +1,11 @@
 'use server';
 
 import { generateExampleSentence } from '@/ai/flows/generate-example-sentence';
-import { proposeTopics, type ProposeTopicsOutput } from '@/ai/flows/propose-topics';
+import { generateLearningPlan, type GenerateLearningPlanOutput } from '@/ai/flows/generate-learning-plan';
 import { textToSpeech } from '@/ai/flows/text-to-speech';
-import type { Connection } from '@/lib/data';
+import type { Connection, UserLevel } from '@/lib/data';
 
-export async function getAIExample(connection: Omit<Connection, 'id' | 'slug' | 'phonetic_spelling'>) {
+export async function getAIExample(connection: Omit<Connection, 'id' | 'slug' | 'phonetic_spelling' | 'level'>) {
   try {
     const result = await generateExampleSentence({
       spanishWord: connection.spanish,
@@ -29,15 +29,15 @@ export async function getPronunciation(text: string) {
   }
 }
 
-export async function getTopicSuggestions(goal: string): Promise<{ success: boolean; data?: ProposeTopicsOutput; error?: string }> {
+export async function getLearningPlan(goal: string, level: UserLevel): Promise<{ success: boolean; data?: GenerateLearningPlanOutput; error?: string }> {
     if (!goal) {
         return { success: false, error: "Please provide a learning goal." };
     }
     try {
-        const result = await proposeTopics({ goal });
+        const result = await generateLearningPlan({ goal, currentLevel: level });
         return { success: true, data: result };
     } catch (error) {
-        console.error('Topic suggestion failed:', error);
+        console.error('Learning plan generation failed:', error);
         return { success: false, error: 'Sorry, I had trouble coming up with ideas. Please try again.' };
     }
 }

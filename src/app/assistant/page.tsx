@@ -1,69 +1,76 @@
 'use client';
 
 import Link from 'next/link';
-import { Home as HomeIcon, Plane, Briefcase, Laptop, ArrowRight, BrainCircuit, School, Building, Loader2, Send, Bot, Sparkles } from 'lucide-react';
-import { topicsData, type Topic, getTopicBySlug } from '@/lib/data';
+import { Bot, Loader2, Send, Sparkles, Lightbulb, Volume2 } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription, CardFooter, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useUser } from '@/hooks/use-user';
 import { WelcomeWizard } from '@/components/WelcomeWizard';
-import { FormEvent, useState, useTransition } from 'react';
+import { FormEvent, useState, useTransition, useRef } from 'react';
 import { Input } from '@/components/ui/input';
-import { getTopicSuggestions } from '@/app/actions';
+import { getLearningPlan, getPronunciation } from '@/app/actions';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import type { ProposeTopicsOutput } from '@/ai/flows/propose-topics';
-
-const topicIcons: { [key: string]: React.ElementType } = {
-  viajes: Plane,
-  trabajo: Briefcase,
-  tecnologia: Laptop,
-  comida: HomeIcon, // Placeholder, update if needed
-  casa: HomeIcon,
-  negocios: Building,
-  academia: School,
-  'conceptos-abstractos': BrainCircuit,
-  'entrevista-trabajo': Briefcase,
-  'desarrollo-software': Laptop,
-};
+import type { GenerateLearningPlanOutput } from '@/ai/flows/generate-learning-plan';
+import { Separator } from '@/components/ui/separator';
+import { useToast } from '@/hooks/use-toast';
 
 export default function AssistantPage() {
   const { currentUser } = useUser();
   const [goal, setGoal] = useState('');
   const [isPending, startTransition] = useTransition();
-  const [suggestions, setSuggestions] = useState<ProposeTopicsOutput | null>(null);
+  const [plan, setPlan] = useState<GenerateLearningPlanOutput | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
+
+  // Pronunciation state
+  const [audioStates, setAudioStates] = useState<{ [key: string]: 'idle' | 'loading' | 'playing' }>({});
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+    if (!currentUser?.level) {
+        setError("Please select a user profile with a level first.");
+        return;
+    }
     setError(null);
-    setSuggestions(null);
+    setPlan(null);
     startTransition(async () => {
-      const result = await getTopicSuggestions(goal);
+      const result = await getLearningPlan(goal, currentUser.level!);
       if(result.success && result.data) {
-        setSuggestions(result.data);
+        setPlan(result.data);
       } else {
         setError(result.error || 'An unknown error occurred.');
       }
     });
   };
 
+  const handlePlayPronunciation = async (wordKey: string, textToSpeak: string) => {
+    setAudioStates(prev => ({ ...prev, [wordKey]: 'loading' }));
+    
+    const result = await getPronunciation(textToSpeak);
+    if (result.success && result.audioDataUri) {
+      if (audioRef.current) {
+        audioRef.current.src = result.audioDataUri;
+        audioRef.current.play().catch(e => console.error("Audio playback failed:", e));
+        setAudioStates(prev => ({ ...prev, [wordKey]: 'playing' }));
+        audioRef.current.onended = () => {
+             setAudioStates(prev => ({ ...prev, [wordKey]: 'idle' }));
+        }
+      }
+    } else {
+        toast({ variant: 'destructive', title: 'Error', description: result.error });
+        setAudioStates(prev => ({ ...prev, [wordKey]: 'idle' }));
+    }
+  };
+
+
   if (!currentUser || !currentUser.level) {
     return <WelcomeWizard />;
   }
 
-  const suggestedTopics = suggestions?.topics.map(suggestion => {
-    const topic = getTopicBySlug(suggestion.slug);
-    if (!topic) return null;
-
-    const filteredConnections = topic.connections.filter(conn => conn.level === currentUser.level);
-    if (filteredConnections.length === 0) return null; // Don't show topic if no words for user's level
-
-    return { ...topic, connections: filteredConnections, reason: suggestion.reason };
-  }).filter((t): t is Topic & { reason: string; } => t !== null);
-
   return (
     <div className="container mx-auto max-w-4xl py-8 px-4 md:px-6">
+      <audio ref={audioRef} className="hidden" />
       <section className="mb-10">
         <Card className="bg-muted/30">
           <CardHeader>
@@ -80,7 +87,7 @@ export default function AssistantPage() {
               <Input
                 value={goal}
                 onChange={(e) => setGoal(e.target.value)}
-                placeholder="Ej: Tengo una entrevista de trabajo en inglés..."
+                placeholder="Ej: Tengo una entrevista de trabajo para ingeniero de software..."
                 className="bg-background"
                 disabled={isPending}
               />
@@ -101,60 +108,70 @@ export default function AssistantPage() {
       {isPending && (
          <div className="text-center">
             <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-4" />
-            <p className="text-muted-foreground">Buscando los mejores temas para ti...</p>
+            <p className="text-muted-foreground">Generando tu plan de aprendizaje personalizado...</p>
          </div>
       )}
 
-      {suggestions && (
+      {plan && (
         <section>
            <Alert className="mb-8 border-primary/30 bg-primary/10">
             <Sparkles className="h-4 w-4 text-primary" />
-            <AlertTitle className="text-primary font-bold">Sugerencia del Asistente</AlertTitle>
+            <AlertTitle className="text-primary font-bold">¡Aquí tienes tu plan!</AlertTitle>
             <AlertDescription className="text-primary/90">
-                {suggestions.response}
+                {plan.response}
             </AlertDescription>
           </Alert>
 
-          <h2 className="text-3xl font-bold font-headline mb-8 text-center">Temas Recomendados</h2>
+          <h2 className="text-3xl font-bold font-headline mb-8 text-center">Vocabulario Recomendado</h2>
 
-          {suggestedTopics && suggestedTopics.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {suggestedTopics.map((topic) => {
-                const Icon = topicIcons[topic.slug] || HomeIcon;
+            <div className="space-y-6">
+              {plan.connections.map((conn, index) => {
+                const wordKey = `${conn.english}-${index}`;
+                const audioState = audioStates[wordKey] || 'idle';
+                const textToSpeak = `In English: ${conn.english}. In Spanish: ${conn.spanish}. Remember this connection: ${conn.mnemonic}`;
+
                 return (
-                  <Card key={topic.slug} className="flex flex-col hover:shadow-lg transition-shadow duration-300 bg-card">
+                  <Card key={wordKey} className="overflow-hidden">
                     <CardHeader>
-                      <div className="flex items-center gap-4 mb-2">
-                        <Icon className="w-8 h-8 text-primary" />
-                        <CardTitle className="text-2xl font-headline">{topic.name}</CardTitle>
+                      <div className="flex justify-between items-start">
+                        <div>
+                            <p className="text-sm text-muted-foreground">{conn.spanish}</p>
+                            <CardTitle className="text-4xl font-headline text-primary">{conn.english}</CardTitle>
+                        </div>
+                         <Button onClick={() => handlePlayPronunciation(wordKey, textToSpeak)} disabled={audioState === 'loading'} variant="outline" size="icon">
+                            {audioState === 'loading' ? <Loader2 className="h-5 w-5 animate-spin" /> : <Volume2 className="h-5 w-5" />}
+                            <span className="sr-only">Listen</span>
+                        </Button>
                       </div>
-                      <CardDescription className='italic'>"{topic.reason}"</CardDescription>
                     </CardHeader>
-                    <CardContent className="flex-grow pt-0">
-                      <p className="text-sm text-muted-foreground">{topic.description}</p>
+                    <CardContent className="space-y-4">
+                        <div>
+                            <h3 className="flex items-center text-lg font-semibold mb-2 text-foreground/80">
+                                <Lightbulb className="mr-2 h-5 w-5 text-accent" />
+                                Conexión Mnemotécnica
+                            </h3>
+                            <p className="text-lg text-foreground/90 italic">"{conn.mnemonic}"</p>
+                        </div>
+                        <Separator/>
+                        <div>
+                            <h3 className="text-lg font-semibold mb-2 text-foreground/80">Pronunciación Figurada</h3>
+                             <p className="text-lg text-foreground/90 font-mono bg-muted px-3 py-2 rounded-md">
+                                {conn.phonetic_spelling}
+                            </p>
+                        </div>
+                         <Separator/>
+                        <div>
+                            <h3 className="text-lg font-semibold mb-2 text-foreground/80">Ejemplo</h3>
+                            <p className="text-foreground/80 leading-relaxed italic">"{conn.example}"</p>
+                        </div>
                     </CardContent>
-                    <CardFooter className="flex justify-between items-center pt-4">
-                      <Badge variant="secondary">{topic.connections.length} Conexiones</Badge>
-                      <Button asChild>
-                        <Link href={`/connections/${topic.slug}`}>
-                          Explorar <ArrowRight className="ml-2 h-4 w-4" />
-                        </Link>
-                      </Button>
-                    </CardFooter>
                   </Card>
                 );
               })}
             </div>
-          ) : (
-            <Card>
-                <CardContent className="p-6 text-center">
-                    <p className="text-muted-foreground">No encontré temas con palabras de tu nivel ({currentUser.level}) para esta meta. ¡Intenta con otra!</p>
-                </CardContent>
-            </Card>
-          )}
-
+          
           <div className="text-center mt-8">
-            <Button variant="outline" onClick={() => { setSuggestions(null); setGoal(''); }}>
+            <Button variant="outline" onClick={() => { setPlan(null); setGoal(''); }}>
                 Empezar una nueva conversación
             </Button>
           </div>
