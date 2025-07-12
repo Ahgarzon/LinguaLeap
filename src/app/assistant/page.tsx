@@ -20,6 +20,7 @@ export default function AssistantPage() {
   const [goal, setGoal] = useState('');
   const [isPending, startTransition] = useTransition();
   const [plan, setPlan] = useState<GenerateLearningPlanOutput | null>(null);
+  const [planSaved, setPlanSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
   const router = useRouter();
@@ -30,7 +31,7 @@ export default function AssistantPage() {
   
   // Effect to save the plan once it's generated
   useEffect(() => {
-    if (plan && addTopicToCurrentUser && currentUser) {
+    if (plan && !planSaved && addTopicToCurrentUser && currentUser?.level) {
       const { topicName, topicDescription, topicSlug, connections } = plan;
 
       const newTopic = {
@@ -50,9 +51,9 @@ export default function AssistantPage() {
         title: '¡Tema Guardado!',
         description: `El tema "${topicName}" ha sido añadido a tu página de "Aprende".`,
       });
-
+      setPlanSaved(true); // Mark as saved to prevent re-triggering
     }
-  }, [plan, addTopicToCurrentUser, currentUser]);
+  }, [plan, addTopicToCurrentUser, currentUser, toast, planSaved]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -62,6 +63,7 @@ export default function AssistantPage() {
     }
     setError(null);
     setPlan(null);
+    setPlanSaved(false); // Reset saved state for new plan
     startTransition(async () => {
       const result = await getLearningPlan(goal, currentUser.level!, currentUser.nativeLanguage!);
       if(result.success && result.data) {
