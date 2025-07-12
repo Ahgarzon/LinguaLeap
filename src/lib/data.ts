@@ -162,7 +162,7 @@ export const topicsData: Topic[] = [
         id: 203,
         spanish: 'Ancho de Banda',
         english: 'Bandwidth',
-        mnemonic: 'El "ancho" de la "banda" de rock determina cuántos datos pueden tocar.',
+        mnemonic: 'El ancho de la "banda" de rock determina cuántos datos pueden tocar.',
         explanation: 'Piensa en una banda de música ("band") y el "ancho" ("width") de su escenario. Un escenario más ancho permite que más músicos (datos) toquen a la vez.',
         example: 'The rock band needs more stage width to handle this much data, we need more bandwidth.',
         slug: 'ancho-de-banda-bandwidth',
