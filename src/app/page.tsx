@@ -29,11 +29,7 @@ export default function Home() {
   
   const filteredTopics = topicsData.map(topic => ({
     ...topic,
-    connections: topic.connections.filter(conn => 
-      currentUser.level === 'advanced' ? ['beginner', 'intermediate', 'advanced'].includes(conn.level) :
-      currentUser.level === 'intermediate' ? ['beginner', 'intermediate'].includes(conn.level) :
-      conn.level === 'beginner'
-    )
+    connections: topic.connections.filter(conn => conn.level === currentUser.level)
   })).filter(topic => topic.connections.length > 0);
 
 

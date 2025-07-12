@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, Lightbulb } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { GenerateExample } from '@/components/GenerateExample';
+import { PronunciationPlayer } from '@/components/PronunciationPlayer';
 
 export default function ConnectionPage({ params }: { params: { topic: string; slug: string } }) {
   const connectionData = getConnectionBySlug(params.topic, params.slug);
@@ -29,12 +30,21 @@ export default function ConnectionPage({ params }: { params: { topic: string; sl
 
       <Card className="overflow-hidden">
         <CardHeader className="bg-muted/30">
-          <p className="text-sm text-muted-foreground">{connection.spanish}</p>
-          <CardTitle className="text-4xl font-headline text-primary">{connection.english}</CardTitle>
+          <div className="flex justify-between items-start">
+            <div>
+              <p className="text-sm text-muted-foreground">{connection.spanish}</p>
+              <CardTitle className="text-4xl font-headline text-primary">{connection.english}</CardTitle>
+            </div>
+            <PronunciationPlayer
+              englishWord={connection.english}
+              spanishWord={connection.spanish}
+              mnemonic={connection.mnemonic}
+            />
+          </div>
         </CardHeader>
         <CardContent className="p-6">
           <div className="mb-6">
-            <h3 className="flex items-center text-lg font-semibold mb-2 text-primary-foreground/80">
+            <h3 className="flex items-center text-lg font-semibold mb-2 text-foreground/80">
               <Lightbulb className="mr-2 h-5 w-5 text-accent" />
               Mnemonic Connection
             </h3>
