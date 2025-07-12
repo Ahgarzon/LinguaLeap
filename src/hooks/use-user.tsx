@@ -1,6 +1,7 @@
+
 'use client';
 
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
 import type { Topic } from '@/lib/data';
 import { topicsData } from '@/lib/data';
 
@@ -84,12 +85,13 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }
   }
 
-  const addTopicToCurrentUser = (topic: Topic) => {
+  const addTopicToCurrentUser = useCallback((topic: Topic) => {
     if (currentUser) {
         const newTopics = [...(currentUser.topics || []), topic];
         updateCurrentUser({ topics: newTopics });
     }
-  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser, users]);
   
   const clearCurrentUser = () => {
     setCurrentUser(null);
