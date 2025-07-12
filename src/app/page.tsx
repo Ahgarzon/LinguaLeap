@@ -1,9 +1,13 @@
+'use client';
+
 import Link from 'next/link';
 import { Utensils, Home as HomeIcon, Plane, Briefcase, Laptop, ArrowRight } from 'lucide-react';
 import { topicsData } from '@/lib/data';
 import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { useUser } from '@/hooks/use-user';
+import { WelcomeWizard } from '@/components/WelcomeWizard';
 
 const topicIcons: { [key: string]: React.ElementType } = {
   trabajo: Briefcase,
@@ -14,10 +18,16 @@ const topicIcons: { [key: string]: React.ElementType } = {
 };
 
 export default function Home() {
+  const { currentUser } = useUser();
+
+  if (!currentUser) {
+    return <WelcomeWizard />;
+  }
+  
   return (
     <div className="container mx-auto py-8 px-4 md:px-6">
       <section className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold font-headline text-primary mb-2">¡Bienvenido a LinguaLeap!</h1>
+        <h1 className="text-4xl md:text-5xl font-bold font-headline text-primary mb-2">¡Bienvenido a LinguaLeap, {currentUser.name}!</h1>
         <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
           Desbloquea la fluidez en inglés con divertidas e inolvidables conexiones mnemotécnicas español-inglés.
         </p>

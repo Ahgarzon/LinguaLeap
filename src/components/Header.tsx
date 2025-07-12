@@ -1,9 +1,21 @@
+'use client';
 import Link from 'next/link';
-import { BookOpen, Dumbbell, Feather } from 'lucide-react';
+import { BookOpen, Dumbbell, Feather, User, Users } from 'lucide-react';
 import { Button } from './ui/button';
-import { AuthButton } from '@/hooks/use-auth';
+import { useUser } from '@/hooks/use-user';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+  } from "@/components/ui/dropdown-menu"
+import { WelcomeWizard } from './WelcomeWizard';
+  
 
 export function Header() {
+    const { currentUser, clearCurrentUser } = useUser();
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 max-w-screen-2xl items-center justify-between">
@@ -39,7 +51,26 @@ export function Header() {
         </div>
 
         <div className="flex items-center">
-            <AuthButton />
+        {currentUser ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center gap-2">
+                  <User className="h-5 w-5" />
+                  <span className="hidden sm:inline">{currentUser.name}</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>Hola, {currentUser.name}</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={clearCurrentUser}>
+                    <Users className="mr-2 h-4 w-4" />
+                    <span>Switch User</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <WelcomeWizard triggerButton />
+          )}
         </div>
       </div>
     </header>
