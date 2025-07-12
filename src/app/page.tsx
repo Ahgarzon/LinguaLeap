@@ -49,11 +49,11 @@ export default function Home() {
           <h2 className="text-3xl font-bold font-headline mb-8 text-center">Temas Disponibles</h2>
           {topicsForLevel.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {topicsForLevel.map((topic) => {
+                {topicsForLevel.map((topic, index) => {
                 if (!topic) return null;
                 const Icon = topicIcons[topic.slug] || BrainCircuit;
                 return (
-                    <Card key={topic.slug} className="flex flex-col hover:shadow-lg transition-shadow duration-300 bg-card">
+                    <Card key={`${topic.slug}-${index}`} className="flex flex-col hover:shadow-lg transition-shadow duration-300 bg-card">
                     <CardHeader>
                         <div className="flex items-center gap-4 mb-2">
                         <Icon className="w-8 h-8 text-primary" />
