@@ -61,11 +61,11 @@ First, based on the user's goal, generate a concise and relevant topic name, slu
 - topicSlug: a URL-friendly version of the name.
 - topicDescription: A one-sentence description.
 
-Next, generate a list of 5 to 7 relevant vocabulary words. Crucially, the vocabulary you select MUST be appropriate for the user's English level.
-- For a 'beginner', choose common, essential words.
-- For a 'lower-intermediate' user, choose more common but slightly more complex words.
-- For an 'upper-intermediate' user, choose more nuanced or less common vocabulary.
-- For an 'advanced' user, choose specialized, idiomatic, or complex vocabulary.
+Next, generate a list of 5 to 7 relevant vocabulary words. Crucially, the vocabulary you select MUST be strictly appropriate for the user's stated English level. This is the most important rule.
+- For a 'beginner', choose essential, high-frequency words. Examples: house, eat, book, meet, job. Do NOT suggest complex words.
+- For a 'lower-intermediate' user, choose words for everyday conversations. Examples: appointment, routine, achieve, improve.
+- For an 'upper-intermediate' user, choose more sophisticated vocabulary for nuanced expression. Examples: insight, leverage, nuance, comprehensive.
+- For an 'advanced' user, choose specialized, idiomatic, or complex vocabulary that demonstrates mastery. Examples: ubiquitous, ephemeral, pragmatic, elucidate. Do NOT suggest simple words like 'meet'.
 
 For each word, you must create a "connection" with the following fields:
 1.  **spanish**: The word in the user's native language ({{nativeLanguage}}).
