@@ -1,3 +1,4 @@
+
 'use client';
 import { useState } from 'react';
 import { useUser, type UserProfile } from '@/hooks/use-user';
@@ -12,17 +13,40 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { UserPlus, Users, ArrowRight } from 'lucide-react';
+import { UserPlus, Users, ArrowRight, Trash2, ShieldQuestion } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Avatar, AvatarFallback } from './ui/avatar';
 import { PlacementTest } from './PlacementTest';
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp"
+import { useToast } from '@/hooks/use-toast';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+  } from "@/components/ui/alert-dialog"
+
+type View = 'list' | 'new' | 'pin' | 'language' | 'test' | 'delete';
 
 export function WelcomeWizard({ triggerButton = false }: { triggerButton?: boolean }) {
-  const { users, setCurrentUser, addUser, currentUser, updateCurrentUser } = useUser();
+  const { users, setCurrentUser, addUser, currentUser, updateCurrentUser, deleteUser } = useUser();
   const [isOpen, setIsOpen] = useState(false);
-  const [view, setView] = useState<'list' | 'new' | 'language' | 'test'>('list');
+  const [view, setView] = useState<View>('list');
   const [newUserName, setNewUserName] = useState('');
+  const [newUserPin, setNewUserPin] = useState('');
   const [nativeLanguage, setNativeLanguage] = useState('');
+  const [userToDelete, setUserToDelete] = useState<UserProfile | null>(null);
+  const [deletePin, setDeletePin] = useState('');
+
+  const { toast } = useToast();
 
   const handleSelectUser = (user: UserProfile) => {
     setCurrentUser(user);
@@ -36,10 +60,17 @@ export function WelcomeWizard({ triggerButton = false }: { triggerButton?: boole
   };
 
   const handleCreateUser = () => {
-    if (newUserName.trim()) {
-      addUser(newUserName.trim());
+    if (newUserName.trim() && newUserPin.length === 4) {
+      addUser(newUserName.trim(), newUserPin);
       setNewUserName('');
+      setNewUserPin('');
       setView('language');
+    } else {
+        toast({
+            variant: 'destructive',
+            title: 'Error',
+            description: 'Por favor, ingresa un nombre y un PIN de 4 dígitos.',
+        })
     }
   };
 
@@ -50,7 +81,29 @@ export function WelcomeWizard({ triggerButton = false }: { triggerButton?: boole
       setView('test');
     }
   };
-  
+
+  const handleDeleteUser = () => {
+    if (!userToDelete || deletePin.length !== 4) return;
+    
+    const success = deleteUser(userToDelete.id, deletePin);
+    if (success) {
+        toast({
+            title: 'Perfil Eliminado',
+            description: `El perfil de ${userToDelete.name} ha sido eliminado.`,
+        });
+        setUserToDelete(null);
+        setDeletePin('');
+        setView('list'); // Go back to the list
+    } else {
+        toast({
+            variant: 'destructive',
+            title: 'PIN Incorrecto',
+            description: 'El PIN introducido no es correcto.',
+        });
+        setDeletePin('');
+    }
+  }
+
   const openDialog = () => {
     if (users.length > 0) {
       setView('list');
@@ -63,6 +116,11 @@ export function WelcomeWizard({ triggerButton = false }: { triggerButton?: boole
   const handleTestComplete = () => {
     setIsOpen(false);
     setView('list');
+  }
+
+  const openDeleteDialog = (e: React.MouseEvent, user: UserProfile) => {
+    e.stopPropagation();
+    setUserToDelete(user);
   }
 
   const renderContent = () => {
@@ -98,6 +156,31 @@ export function WelcomeWizard({ triggerButton = false }: { triggerButton?: boole
             </DialogFooter>
           </>
         );
+      case 'pin':
+        return (
+            <>
+              <DialogHeader>
+                <DialogTitle>Crear PIN de Seguridad</DialogTitle>
+                <DialogDescription>
+                  Crea un PIN de 4 dígitos para tu perfil. Lo necesitarás para eliminarlo más tarde.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="flex flex-col items-center gap-4 py-4">
+                <InputOTP maxLength={4} value={newUserPin} onChange={setNewUserPin}>
+                  <InputOTPGroup>
+                    <InputOTPSlot index={0} />
+                    <InputOTPSlot index={1} />
+                    <InputOTPSlot index={2} />
+                    <InputOTPSlot index={3} />
+                  </InputOTPGroup>
+                </InputOTP>
+              </div>
+              <DialogFooter>
+                <Button variant="ghost" onClick={() => setView('new')}>Volver</Button>
+                <Button onClick={handleCreateUser} disabled={newUserPin.length < 4}>Crear y Continuar</Button>
+              </DialogFooter>
+            </>
+          );
       case 'new':
         return (
           <>
@@ -118,13 +201,13 @@ export function WelcomeWizard({ triggerButton = false }: { triggerButton?: boole
                   onChange={(e) => setNewUserName(e.target.value)}
                   className="col-span-3"
                   placeholder="E.g. Alex"
-                  onKeyDown={(e) => e.key === 'Enter' && handleCreateUser()}
+                  onKeyDown={(e) => e.key === 'Enter' && setView('pin')}
                 />
               </div>
             </div>
             <DialogFooter>
               {users.length > 0 && <Button variant="ghost" onClick={() => setView('list')}>Volver a Perfiles</Button>}
-              <Button onClick={handleCreateUser}>Crear y Continuar</Button>
+              <Button onClick={() => setView('pin')} disabled={!newUserName.trim()}>Siguiente: Crear PIN</Button>
             </DialogFooter>
           </>
         );
@@ -141,7 +224,7 @@ export function WelcomeWizard({ triggerButton = false }: { triggerButton?: boole
             <div className="grid gap-4 py-4">
               {users.map(user => (
                 <div key={user.id} 
-                  className="flex items-center justify-between p-2 rounded-md hover:bg-muted cursor-pointer"
+                  className="flex items-center justify-between p-2 rounded-md hover:bg-muted cursor-pointer group"
                   onClick={() => handleSelectUser(user)}
                 >
                   <div className='flex items-center gap-3'>
@@ -150,7 +233,12 @@ export function WelcomeWizard({ triggerButton = false }: { triggerButton?: boole
                     </Avatar>
                     <span className="font-medium">{user.name}</span>
                   </div>
-                  <ArrowRight className="h-5 w-5 text-muted-foreground" />
+                  <div className="flex items-center gap-2">
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={(e) => openDeleteDialog(e, user)}>
+                        <Trash2 className="h-4 w-4" />
+                    </Button>
+                    <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+                  </div>
                 </div>
               ))}
                <Button variant="outline" onClick={() => setView('new')}>
@@ -168,6 +256,35 @@ export function WelcomeWizard({ triggerButton = false }: { triggerButton?: boole
       {renderContent()}
     </DialogContent>
   );
+
+  const deleteDialog = (
+    <AlertDialog open={!!userToDelete} onOpenChange={(isOpen) => !isOpen && setUserToDelete(null)}>
+        <AlertDialogContent>
+        <AlertDialogHeader>
+            <AlertDialogTitle>¿Eliminar el perfil de "{userToDelete?.name}"?</AlertDialogTitle>
+            <AlertDialogDescription>
+            Esta acción no se puede deshacer. Para confirmar, por favor introduce el PIN de 4 dígitos de este perfil.
+            </AlertDialogDescription>
+        </AlertDialogHeader>
+        <div className="flex flex-col items-center gap-4 py-4">
+            <InputOTP maxLength={4} value={deletePin} onChange={setDeletePin}>
+                <InputOTPGroup>
+                <InputOTPSlot index={0} />
+                <InputOTPSlot index={1} />
+                <InputOTPSlot index={2} />
+                <InputOTPSlot index={3} />
+                </InputOTPGroup>
+            </InputOTP>
+        </div>
+        <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setDeletePin('')}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteUser} disabled={deletePin.length < 4} className="bg-destructive hover:bg-destructive/90">
+                Eliminar Perfil
+            </AlertDialogAction>
+        </AlertDialogFooter>
+        </AlertDialogContent>
+  </AlertDialog>
+  )
 
   // If user exists but something is missing, force the dialog open
   if (currentUser && (!currentUser.nativeLanguage || !currentUser.level) && !isOpen && !triggerButton) {
@@ -188,6 +305,7 @@ export function WelcomeWizard({ triggerButton = false }: { triggerButton?: boole
                 Empezar
             </Button>
             {dialogContent}
+            {deleteDialog}
         </Dialog>
     )
   }
@@ -206,6 +324,7 @@ export function WelcomeWizard({ triggerButton = false }: { triggerButton?: boole
                 Crear o Seleccionar Perfil
             </Button>
             {dialogContent}
+            {deleteDialog}
           </Dialog>
         </CardContent>
       </Card>

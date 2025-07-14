@@ -13,6 +13,7 @@ export interface UserProfile {
   nativeLanguage: string;
   level: UserLevel | null;
   topics: Topic[];
+  pin: string; // PIN is now mandatory
 }
 
 interface UserContextType {
@@ -20,7 +21,8 @@ interface UserContextType {
   currentUser: UserProfile | null;
   setCurrentUser: (user: UserProfile | null) => void;
   updateCurrentUser: (updates: Partial<UserProfile>) => void;
-  addUser: (name: string) => UserProfile;
+  addUser: (name: string, pin: string) => UserProfile;
+  deleteUser: (userId: number, pin: string) => boolean;
   clearCurrentUser: () => void;
   addTopicToCurrentUser: (topic: Topic) => void;
 }
@@ -97,21 +99,37 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     setCurrentUser(null);
   }
 
-  const addUser = (name: string): UserProfile => {
+  const addUser = (name: string, pin: string): UserProfile => {
     const newUser: UserProfile = {
       id: Date.now(),
       name,
       nativeLanguage: '',
       level: null,
-      topics: getRandomInitialTopics(), // Start with random topics
+      topics: getRandomInitialTopics(),
+      pin,
     };
     const updatedUsers = [...users, newUser];
     setUsers(updatedUsers);
     setCurrentUser(newUser);
     return newUser;
   };
+  
+  const deleteUser = (userId: number, pin: string): boolean => {
+    const userToDelete = users.find(u => u.id === userId);
+    if (!userToDelete || userToDelete.pin !== pin) {
+        return false; // User not found or PIN is incorrect
+    }
 
-  const value = { users, currentUser, setCurrentUser, updateCurrentUser, addUser, clearCurrentUser, addTopicToCurrentUser };
+    const updatedUsers = users.filter(u => u.id !== userId);
+    setUsers(updatedUsers);
+
+    if (currentUser?.id === userId) {
+        clearCurrentUser();
+    }
+    return true;
+  }
+
+  const value = { users, currentUser, setCurrentUser, updateCurrentUser, addUser, deleteUser, clearCurrentUser, addTopicToCurrentUser };
 
   return (
     <UserContext.Provider value={value}>
