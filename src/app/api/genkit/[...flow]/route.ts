@@ -1,2 +1,4 @@
-import {nextPlugin} from '@genkit-ai/next';
-export const {GET, POST} = nextPlugin();
+import {createNextApiHandler} from '@genkit-ai/next';
+import '@/ai/genkit';
+
+export const {GET, POST} = createNextApiHandler();
