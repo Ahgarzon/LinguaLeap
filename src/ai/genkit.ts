@@ -1,6 +1,6 @@
 import {genkit, GenerationCommonConfig, configureGenkit} from 'genkit';
 import {googleAI} from '@genkit-ai/googleai';
-import {defineNextPlugin} from '@genkit-ai/next';
+import {defineNextPlugin} from '@genkit-ai/next/plugin';
 
 const safetySettings: GenerationCommonConfig['safetySettings'] = [
   {
