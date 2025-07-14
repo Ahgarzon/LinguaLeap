@@ -1,6 +1,6 @@
-
 import {genkit, GenerationCommonConfig} from 'genkit';
 import {googleAI} from '@genkit-ai/googleai';
+import {firebase} from '@genkit-ai/firebase/plugin';
 import defineNextPlugin from '@genkit-ai/next';
 
 const safetySettings: GenerationCommonConfig['safetySettings'] = [
@@ -25,6 +25,7 @@ const safetySettings: GenerationCommonConfig['safetySettings'] = [
 export const ai = genkit({
   plugins: [
     googleAI(),
+    firebase(),
     defineNextPlugin({
       // These flows will be available as API endpoints
       flows: [
