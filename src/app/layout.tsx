@@ -8,6 +8,8 @@ import { UserProvider } from '@/hooks/use-user';
 export const metadata: Metadata = {
   title: 'LinguaLeap',
   description: 'Learn English with fun Spanish-English mnemonics!',
+  manifest: '/manifest.json',
+  themeColor: '#F5F5F5',
 };
 
 export default function RootLayout({
@@ -21,6 +23,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap" rel="stylesheet" />
+        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
       </head>
       <body className={cn('min-h-screen bg-background font-body antialiased')}>
         <UserProvider>
