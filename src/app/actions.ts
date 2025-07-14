@@ -15,7 +15,14 @@ export async function getAIExample(connection: Omit<Connection, 'id' | 'slug' | 
     return { success: true, example: result.exampleSentence };
   } catch (error) {
     console.error('AI example generation failed:', error);
-    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
+    let errorMessage = 'An unknown error occurred.';
+    if (error instanceof Error) {
+        if (error.message.includes('quota')) {
+            errorMessage = 'Sorry, the request limit for generating examples has been reached for today. Please try again tomorrow.';
+        } else {
+            errorMessage = error.message;
+        }
+    }
     return { success: false, error: `Failed to generate a new example. Reason: ${errorMessage}` };
   }
 }
@@ -26,7 +33,14 @@ export async function getPronunciation(text: string) {
     return { success: true, audioDataUri: result.audioDataUri };
   } catch (error) {
     console.error('Text-to-speech generation failed:', error);
-    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
+    let errorMessage = 'An unknown error occurred.';
+    if (error instanceof Error) {
+        if (error.message.toLowerCase().includes('quota')) {
+            errorMessage = 'The daily limit for pronunciations has been reached. Please try again tomorrow.';
+        } else {
+            errorMessage = error.message;
+        }
+    }
     return { success: false, error: `Failed to generate pronunciation. Reason: ${errorMessage}` };
   }
 }
@@ -43,7 +57,14 @@ export async function getLearningPlan(goal: string, level: UserLevel, nativeLang
         return { success: true, data: result };
     } catch (error) {
         console.error('Learning plan generation failed:', error);
-        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
+        let errorMessage = 'An unknown error occurred.';
+        if (error instanceof Error) {
+            if (error.message.toLowerCase().includes('quota')) {
+                errorMessage = 'Sorry, I have reached my idea generation limit for today. Please try again tomorrow.';
+            } else {
+                errorMessage = error.message;
+            }
+        }
         return { success: false, error: `Sorry, I had trouble coming up with ideas. Reason: ${errorMessage}` };
     }
 }
