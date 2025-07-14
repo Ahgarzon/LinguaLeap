@@ -9,6 +9,7 @@
  */
 
 import {ai} from '@/ai/genkit';
+import {googleAI} from '@genkit-ai/googleai';
 import {z} from 'genkit';
 
 const GenerateLearningPlanInputSchema = z.object({
@@ -42,6 +43,7 @@ export async function generateLearningPlan(
 
 const prompt = ai.definePrompt({
   name: 'generateLearningPlanPrompt',
+  model: googleAI.model('gemini-2.0-flash'),
   input: {schema: GenerateLearningPlanInputSchema},
   output: {schema: GenerateLearningPlanOutputSchema},
   prompt: `You are an expert and creative language learning assistant for an app called LinguaLeap. Your specialty is creating personalized vocabulary plans with powerful mnemonic devices to connect English words with words in the user's native language.

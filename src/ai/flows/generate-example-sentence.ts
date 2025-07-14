@@ -9,6 +9,7 @@
  */
 
 import {ai} from '@/ai/genkit';
+import {googleAI} from '@genkit-ai/googleai';
 import {z} from 'genkit';
 
 const GenerateExampleSentenceInputSchema = z.object({
@@ -31,6 +32,7 @@ export async function generateExampleSentence(
 
 const prompt = ai.definePrompt({
   name: 'generateExampleSentencePrompt',
+  model: googleAI.model('gemini-2.0-flash'),
   input: {schema: GenerateExampleSentenceInputSchema},
   output: {schema: GenerateExampleSentenceOutputSchema},
   prompt: `You are a helpful language learning assistant.
