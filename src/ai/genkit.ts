@@ -1,6 +1,8 @@
+'use server';
+
 import {genkit, GenerationCommonConfig} from 'genkit';
 import {googleAI} from '@genkit-ai/googleai';
-import {firebase} from '@genkit-ai/firebase';
+import {firebase} from '@genkit-ai/firebase/plugin';
 import defineNextPlugin from '@genkit-ai/next';
 
 const safetySettings: GenerationCommonConfig['safetySettings'] = [
