@@ -15,7 +15,8 @@ export async function getAIExample(connection: Omit<Connection, 'id' | 'slug' | 
     return { success: true, example: result.exampleSentence };
   } catch (error) {
     console.error('AI example generation failed:', error);
-    return { success: false, error: 'Failed to generate a new example. Please try again.' };
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
+    return { success: false, error: `Failed to generate a new example. Reason: ${errorMessage}` };
   }
 }
 
@@ -25,7 +26,8 @@ export async function getPronunciation(text: string) {
     return { success: true, audioDataUri: result.audioDataUri };
   } catch (error) {
     console.error('Text-to-speech generation failed:', error);
-    return { success: false, error: 'Failed to generate pronunciation. Please try again.' };
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
+    return { success: false, error: `Failed to generate pronunciation. Reason: ${errorMessage}` };
   }
 }
 
@@ -41,6 +43,7 @@ export async function getLearningPlan(goal: string, level: UserLevel, nativeLang
         return { success: true, data: result };
     } catch (error) {
         console.error('Learning plan generation failed:', error);
-        return { success: false, error: 'Sorry, I had trouble coming up with ideas. Please try again.' };
+        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
+        return { success: false, error: `Sorry, I had trouble coming up with ideas. Reason: ${errorMessage}` };
     }
 }

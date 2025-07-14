@@ -62,10 +62,10 @@ export const topicsData: Topic[] = [
         id: 102,
         spanish: 'Itinerario',
         english: 'Itinerary',
-        mnemonic: 'Si "it" (eso) no está en el "itinerario", ¡no vamos!',
+        mnemonic: 'Para no tener que "adivinar-ary", mejor revisa el "itinerario".',
         phonetic_spelling: 'ai-ti-ne-ra-ri',
-        explanation: 'Usa la frase en spanglish para recordar que el plan de viaje es estricto. "It" en inglés suena como el inicio de "itinerario".',
-        example: 'If "it" is not on the itinerary, we are not going.',
+        explanation: 'Usa la rima entre "adivinar-ary" y "itinerary" para recordar que el itinerario te ahorra tener que adivinar qué sigue en tu viaje.',
+        example: 'To avoid having to guess, I always check the itinerary first.',
         slug: 'itinerario-itinerary',
         level: 'intermediate'
       },

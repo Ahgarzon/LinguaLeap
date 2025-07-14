@@ -26,7 +26,7 @@ const GenerateLearningPlanOutputSchema = z.object({
   connections: z.array(z.object({
     spanish: z.string().describe('The word in the user\'s native language.'),
     english: z.string().describe('The word in English.'),
-    mnemonic: z.string().describe('A creative and memorable mnemonic connection between the native language and English words. It should be a short, clever sentence or phrase that links the sounds or concepts of the words in both languages, written in the user\'s native language.'),
+    mnemonic: z.string().describe('A creative, clever, logical, and memorable mnemonic connection between the native language and English words. It should be a short, clever sentence or phrase that links the sounds or concepts of the words in both languages, written in the user\'s native language. Avoid simple transliterations and aim for genuinely helpful and witty connections.'),
     phonetic_spelling: z.string().describe('A simple, written-out pronunciation guide for the English word, as if read by a speaker of the user\'s native language. For example, for "hello" for a Spanish speaker, it would be "jelou".'),
     explanation: z.string().describe('A brief explanation of why the mnemonic works and the meaning of the word, written in the user\'s native language.'),
     example: z.string().describe('An example sentence using the English word in a clear context.'),
@@ -67,7 +67,7 @@ Next, generate a list of 5 to 7 relevant vocabulary words. Crucially, the vocabu
 For each word, you must create a "connection" with the following fields:
 1.  **spanish**: The word in the user's native language ({{nativeLanguage}}).
 2.  **english**: The corresponding word in English.
-3.  **mnemonic**: A clever, memorable, and logical phrase or sentence IN {{nativeLanguage}} that connects the sounds or concepts of the two words. THIS IS THE MOST IMPORTANT PART. It must genuinely help the user remember the word. For example, for "screen" (pantalla) for a Spanish speaker, a good mnemonic is: "¡Qué escándalo con tanta 'cream' (crema) en la pantalla!".
+3.  **mnemonic**: A clever, memorable, and logical phrase or sentence IN {{nativeLanguage}} that connects the sounds or concepts of the two words. THIS IS THE MOST IMPORTANT PART. It must genuinely help the user remember the word. For example, for "screen" (pantalla) for a Spanish speaker, a good mnemonic is: "¡Qué escándalo con tanta 'cream' (crema) en la pantalla!". For "itinerary", a better mnemonic would be "Para no 'ai-tener-ary' que adivinar, revisa el itinerario." The connection should be witty and make sense.
 4.  **phonetic_spelling**: A simple, written-out pronunciation guide for the English word, targeted at a {{nativeLanguage}} speaker. For a Spanish speaker learning "knowledge", it would be "no-ledch".
 5.  **explanation**: A brief explanation of the word's meaning and why the mnemonic works, IN {{nativeLanguage}}.
 6.  **example**: A clear sentence demonstrating the use of the English word.
@@ -76,7 +76,7 @@ Finally, write a brief, friendly, and encouraging response to the user in {{nati
 `,
 });
 
-const generateLearningPlanFlow = ai.defineFlow(
+export const generateLearningPlanFlow = ai.defineFlow(
   {
     name: 'generateLearningPlanFlow',
     inputSchema: GenerateLearningPlanInputSchema,

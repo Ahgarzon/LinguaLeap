@@ -1,13 +1,15 @@
 'use client';
 
 import Link from 'next/link';
-import { Utensils, Home as HomeIcon, Plane, Briefcase, Laptop, ArrowRight, BrainCircuit, School, Building, Shield } from 'lucide-react';
-import { topicsData } from '@/lib/data';
+import { Utensils, Home as HomeIcon, Plane, Briefcase, Laptop, ArrowRight, BrainCircuit, School, Building, Shield, Menu } from 'lucide-react';
+import { topicsData, getAllConnections, Connection } from '@/lib/data';
 import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useUser } from '@/hooks/use-user';
 import { WelcomeWizard } from '@/components/WelcomeWizard';
+import { DailyConnection } from '@/components/DailyConnection';
+import { useState, useEffect } from 'react';
 
 const topicIcons: { [key: string]: React.ElementType } = {
   viajes: Plane,
@@ -25,6 +27,18 @@ const topicIcons: { [key: string]: React.ElementType } = {
 
 export default function Home() {
   const { currentUser } = useUser();
+  const [dailyConnection, setDailyConnection] = useState<Connection | null>(null);
+
+  useEffect(() => {
+    if (currentUser?.topics) {
+      const allConns = getAllConnections(currentUser.topics);
+      if (allConns.length > 0) {
+        const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / (1000 * 60 * 60 * 24));
+        const index = dayOfYear % allConns.length;
+        setDailyConnection(allConns[index]);
+      }
+    }
+  }, [currentUser?.topics]);
 
   if (!currentUser || !currentUser.level) {
     return <WelcomeWizard />;
@@ -41,12 +55,14 @@ export default function Home() {
       <section className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold font-headline text-primary mb-2">¡Hola, {currentUser.name}!</h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-            Elige un tema para empezar a expandir tu vocabulario. Hay <Badge variant="secondary">{topicsForLevel.reduce((acc, t) => acc + (t?.connections.length || 0), 0)}</Badge> conexiones para tu nivel de <strong>{currentUser.level}</strong>.
+            Tienes <Badge variant="secondary">{topicsForLevel.reduce((acc, t) => acc + (t?.connections.length || 0), 0)}</Badge> conexiones para tu nivel de <strong>{currentUser.level}</strong>.
           </p>
       </section>
 
+      {dailyConnection && <DailyConnection connection={dailyConnection} />}
+
       <section>
-          <h2 className="text-3xl font-bold font-headline mb-8 text-center">Temas Disponibles</h2>
+          <h2 className="text-3xl font-bold font-headline mb-8 text-center mt-12">Temas Disponibles</h2>
           {topicsForLevel.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {topicsForLevel.map((topic, index) => {
@@ -74,10 +90,10 @@ export default function Home() {
                 })}
             </div>
            ) : (
-            <div className="text-center text-muted-foreground">
-              <p>No tienes temas todavía.</p>
-              <Button asChild variant="link" className="mt-2">
-                <Link href="/assistant">¡Pídele a tu asistente que cree uno para ti!</Link>
+            <div className="text-center text-muted-foreground mt-8">
+              <p className="mb-2">Aún no tienes temas de estudio.</p>
+              <Button asChild variant="link">
+                <Link href="/assistant">¡Pídele a tu asistente que cree un plan de aprendizaje para ti!</Link>
               </Button>
             </div>
            )}
