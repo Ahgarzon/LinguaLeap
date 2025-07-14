@@ -9,8 +9,9 @@ import { useState } from 'react';
 
 const levels: { value: UserLevel, label: string, description: string }[] = [
     { value: 'beginner', label: 'Principiante', description: 'Estoy empezando o sé muy pocas palabras.' },
-    { value: 'intermediate', label: 'Intermedio', description: 'Entiendo conversaciones y puedo comunicarme.' },
-    { value: 'advanced', label: 'Avanzado', description: 'Tengo fluidez y quiero perfeccionar mi vocabulario.' },
+    { value: 'lower-intermediate', label: 'Intermedio-Bajo', description: 'Puedo mantener conversaciones simples y entiendo lo básico.' },
+    { value: 'upper-intermediate', label: 'Intermedio-Alto', description: 'Entiendo conversaciones complejas y puedo comunicarme con cierta fluidez.' },
+    { value: 'advanced', label: 'Avanzado', description: 'Tengo fluidez y quiero perfeccionar mi vocabulario especializado.' },
 ];
 
 export function PlacementTest({ onComplete }: { onComplete: () => void }) {

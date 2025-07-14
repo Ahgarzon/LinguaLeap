@@ -2,14 +2,15 @@
 
 import Link from 'next/link';
 import { Utensils, Home as HomeIcon, Plane, Briefcase, Laptop, ArrowRight, BrainCircuit, School, Building, Shield, Menu } from 'lucide-react';
-import { topicsData, getAllConnections, Connection } from '@/lib/data';
+import { Connection } from '@/lib/data';
 import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { useUser } from '@/hooks/use-user';
+import { useUser, type UserLevel } from '@/hooks/use-user';
 import { WelcomeWizard } from '@/components/WelcomeWizard';
 import { DailyConnection } from '@/components/DailyConnection';
 import { useState, useEffect } from 'react';
+import { getAllConnections } from '@/lib/data';
 
 const topicIcons: { [key: string]: React.ElementType } = {
   viajes: Plane,
@@ -24,6 +25,14 @@ const topicIcons: { [key: string]: React.ElementType } = {
   'desarrollo-software': Laptop,
   militar: Shield,
 };
+
+const levelMapping: Record<UserLevel, string> = {
+    'beginner': 'Principiante',
+    'lower-intermediate': 'Intermedio-Bajo',
+    'upper-intermediate': 'Intermedio-Alto',
+    'advanced': 'Avanzado',
+}
+
 
 export default function Home() {
   const { currentUser } = useUser();
@@ -55,7 +64,7 @@ export default function Home() {
       <section className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold font-headline text-primary mb-2">¡Hola, {currentUser.name}!</h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-            Tienes <Badge variant="secondary">{topicsForLevel.reduce((acc, t) => acc + (t?.connections.length || 0), 0)}</Badge> conexiones para tu nivel de <strong>{currentUser.level}</strong>.
+            Tienes <Badge variant="secondary">{topicsForLevel.reduce((acc, t) => acc + (t?.connections.length || 0), 0)}</Badge> conexiones para tu nivel de <strong>{levelMapping[currentUser.level]}</strong>.
           </p>
       </section>
 

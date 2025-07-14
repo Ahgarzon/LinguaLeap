@@ -3,9 +3,9 @@
 
 import React, { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
 import type { Topic } from '@/lib/data';
-import { topicsData } from '@/lib/data';
+import { topicsData, getRandomInitialTopics } from '@/lib/data';
 
-export type UserLevel = 'beginner' | 'intermediate' | 'advanced';
+export type UserLevel = 'beginner' | 'lower-intermediate' | 'upper-intermediate' | 'advanced';
 
 export interface UserProfile {
   id: number;
@@ -103,7 +103,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       name,
       nativeLanguage: '',
       level: null,
-      topics: topicsData, // Start with default topics
+      topics: getRandomInitialTopics(), // Start with random topics
     };
     const updatedUsers = [...users, newUser];
     setUsers(updatedUsers);

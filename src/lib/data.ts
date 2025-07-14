@@ -56,7 +56,7 @@ export const topicsData: Topic[] = [
         explanation: 'La palabra "customs" en inglés también significa "costumbres" o "tradiciones". Imagina que el oficial de aduanas es muy curioso sobre tus costumbres personales.',
         example: 'Tell the customs officer about your local customs when you travel.',
         slug: 'aduana-customs',
-        level: 'intermediate'
+        level: 'lower-intermediate'
       },
       {
         id: 102,
@@ -67,7 +67,7 @@ export const topicsData: Topic[] = [
         explanation: 'Usa la rima entre "adivinar-ary" y "itinerary" para recordar que el itinerario te ahorra tener que adivinar qué sigue en tu viaje.',
         example: 'To avoid having to guess, I always check the itinerary first.',
         slug: 'itinerario-itinerary',
-        level: 'intermediate'
+        level: 'lower-intermediate'
       },
       {
         id: 201,
@@ -118,7 +118,7 @@ export const topicsData: Topic[] = [
         explanation: 'Asocia la idea de un plazo final con una "línea mortal" que no puedes cruzar. Es una exageración que ayuda a recordar la urgencia.',
         example: 'I have to finish this report before the deadline, or I\'m dead!',
         slug: 'plazo-deadline',
-        level: 'intermediate'
+        level: 'upper-intermediate'
       },
       {
         id: 202,
@@ -169,7 +169,7 @@ export const topicsData: Topic[] = [
         explanation: 'Literalmente, "upload" significa "cargar hacia arriba". Asocia "up" con la dirección y "load" con la acción de cargar.',
         example: 'Go up and manage the server load, then you can upload the file.',
         slug: 'subir-upload',
-        level: 'intermediate'
+        level: 'lower-intermediate'
       },
       {
         id: 203,
@@ -209,7 +209,7 @@ export const topicsData: Topic[] = [
         explanation: '"Bug" en inglés significa "bicho" o "insecto". Depurar ("debug") es el proceso de encontrar y eliminar estos "bichos" o errores del software.',
         example: 'I need to find the bug in the code to debug the application.',
         slug: 'depurar-debug',
-        level: 'intermediate'
+        level: 'lower-intermediate'
       },
       {
         id: 303,
@@ -220,7 +220,7 @@ export const topicsData: Topic[] = [
         explanation: 'Imagina que "compilar" es juntar "con" una "pila" de archivos de código fuente para crear un único archivo ejecutable.',
         example: 'I will compile the code with this pile of files.',
         slug: 'compilar-compile',
-        level: 'intermediate'
+        level: 'upper-intermediate'
       },
       {
         id: 304,
@@ -249,7 +249,7 @@ export const topicsData: Topic[] = [
         explanation: 'La pronunciación de "strengths" puede ser difícil. Asóciala con la imagen de una trenza fuerte y larga, que representa tus múltiples fortalezas.',
         example: 'My list of strengths is as long as a braid (trenza).',
         slug: 'fortalezas-strengths',
-        level: 'intermediate'
+        level: 'upper-intermediate'
       },
       {
         id: 402,
@@ -260,7 +260,7 @@ export const topicsData: Topic[] = [
         explanation: '"Weak" suena como "hueco" en español (algo sin fuerza). Imagina que esta semana tienes que rellenar esas debilidades huecas.',
         example: 'My weaknesses are weak, but I will work on them this week.',
         slug: 'debilidades-weaknesses',
-        level: 'intermediate'
+        level: 'upper-intermediate'
       },
       {
         id: 403,
@@ -318,7 +318,7 @@ export const topicsData: Topic[] = [
         explanation: 'Imagina que dentro ("in") de cada factura que emites, grabas un mensaje de voz ("voice") explicando los cargos. "In" + "voice" = "invoice".',
         example: 'In this invoice, I want to include my voice complaining about the price.',
         slug: 'factura-invoice',
-        level: 'intermediate'
+        level: 'lower-intermediate'
       },
       {
         id: 204,
@@ -347,7 +347,7 @@ export const topicsData: Topic[] = [
         explanation: 'Juega con la pronunciación de "essay". Suena como "ese" en español. Imagina que estás escribiendo un ensayo sobre "ese" tema.',
         example: '"Ese" essay is not about what you say.',
         slug: 'ensayo-essay',
-        level: 'intermediate'
+        level: 'lower-intermediate'
       },
       {
         id: 205,
@@ -376,7 +376,7 @@ export const topicsData: Topic[] = [
         explanation: 'Divide "knowledge" en "know" (saber/no) y "ledge" (borde/ventaja). Sin saber ("know"), no tienes una ventaja ("ledge") sobre los demás.',
         example: 'You will have no edge if you have no knowledge.',
         slug: 'conocimiento-knowledge',
-        level: 'intermediate'
+        level: 'upper-intermediate'
       },
       {
         id: 206,
@@ -392,6 +392,33 @@ export const topicsData: Topic[] = [
     ]
   }
 ];
+
+export function getRandomInitialTopics(): Topic[] {
+    const allConnections = topicsData.flatMap(topic => 
+        topic.connections.map(connection => ({ ...connection, topicName: topic.name, topicSlug: topic.slug, topicDescription: topic.description }))
+    );
+
+    const shuffledConnections = [...allConnections].sort(() => 0.5 - Math.random());
+    
+    // Get a random number of connections (e.g., between 5 and 10)
+    const selectedConnections = shuffledConnections.slice(0, Math.floor(Math.random() * 6) + 5);
+
+    const newTopics: { [slug: string]: Topic } = {};
+
+    for (const conn of selectedConnections) {
+        if (!newTopics[conn.topicSlug]) {
+            newTopics[conn.topicSlug] = {
+                name: conn.topicName,
+                slug: conn.topicSlug,
+                description: conn.topicDescription,
+                connections: [],
+            };
+        }
+        newTopics[conn.topicSlug].connections.push(conn);
+    }
+
+    return Object.values(newTopics);
+}
 
 export const getAllConnections = (userTopics?: Topic[]) => (userTopics || topicsData).flatMap(topic => topic.connections);
 export const getTopicBySlug = (slug: string, userTopics?: Topic[]) => (userTopics || topicsData).find(topic => topic.slug === slug);

@@ -1,8 +1,8 @@
 'use client';
 import Link from 'next/link';
-import { BookOpen, Dumbbell, Feather, User, Users, MessageCircle, Menu, X } from 'lucide-react';
+import { BookOpen, Dumbbell, Feather, User, Users, MessageCircle, Menu, X, Video } from 'lucide-react';
 import { Button } from './ui/button';
-import { useUser } from '@/hooks/use-user';
+import { useUser, type UserLevel } from '@/hooks/use-user';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -21,6 +21,13 @@ import {
   SheetTrigger,
   SheetClose
 } from "@/components/ui/sheet"
+
+const levelMapping: Record<UserLevel, string> = {
+    'beginner': 'Principiante',
+    'lower-intermediate': 'Intermedio-Bajo',
+    'upper-intermediate': 'Intermedio-Alto',
+    'advanced': 'Avanzado',
+}
   
 
 export function Header() {
@@ -54,6 +61,15 @@ export function Header() {
                 >
                 <Dumbbell className="inline-block h-4 w-4 mr-2" />
                 Practicar
+                </Link>
+            </Button>
+             <Button variant="ghost" asChild>
+                <Link
+                href="/oral-practice"
+                className={cn("transition-colors hover:text-foreground/80", pathname === '/oral-practice' ? 'text-foreground' : 'text-foreground/60')}
+                >
+                <Video className="inline-block h-4 w-4 mr-2" />
+                Práctica Oral
                 </Link>
             </Button>
         </>
@@ -94,6 +110,17 @@ export function Header() {
                     </Link>
                 </SheetClose>
             </Button>
+            <Button variant="ghost" asChild>
+                <SheetClose asChild>
+                    <Link
+                    href="/oral-practice"
+                    className={cn("transition-colors hover:text-foreground/80 w-full justify-start", pathname === '/oral-practice' ? 'text-foreground' : 'text-foreground/60')}
+                    >
+                    <Video className="inline-block h-4 w-4 mr-2" />
+                    Práctica Oral
+                    </Link>
+                </SheetClose>
+            </Button>
         </>
     )
 
@@ -125,7 +152,7 @@ export function Header() {
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel className='flex flex-col space-y-1'>
                     <span>Hola, {currentUser.name}</span>
-                    {currentUser.level && <Badge variant="secondary" className="w-fit">{currentUser.level}</Badge>}
+                    {currentUser.level && <Badge variant="secondary" className="w-fit">{levelMapping[currentUser.level]}</Badge>}
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={clearCurrentUser}>
