@@ -1,4 +1,12 @@
-import {createNextApiHandler} from '@genkit-ai/next';
+import defineNextPlugin from '@genkit-ai/next';
 import '@/ai/genkit';
 
-export const {GET, POST} = createNextApiHandler();
+const nextPlugin = defineNextPlugin({
+  flows: [
+    'generateExampleSentenceFlow',
+    'textToSpeechFlow',
+    'generateLearningPlanFlow',
+  ],
+});
+
+export const {GET, POST} = nextPlugin;
