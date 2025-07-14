@@ -27,7 +27,39 @@ export function Header() {
     const { currentUser, clearCurrentUser } = useUser();
     const pathname = usePathname();
 
-    const navLinks = (
+    const desktopNavLinks = (
+        <>
+            <Button variant="ghost" asChild>
+                <Link
+                href="/"
+                className={cn("transition-colors hover:text-foreground/80", pathname === '/' ? 'text-foreground' : 'text-foreground/60')}
+                >
+                <BookOpen className="inline-block h-4 w-4 mr-2" />
+                Aprende
+                </Link>
+            </Button>
+            <Button variant="ghost" asChild>
+                <Link
+                href="/assistant"
+                className={cn("transition-colors hover:text-foreground/80", pathname === '/assistant' ? 'text-foreground' : 'text-foreground/60')}
+                >
+                <MessageCircle className="inline-block h-4 w-4 mr-2" />
+                Asistente
+                </Link>
+            </Button>
+            <Button variant="ghost" asChild>
+                <Link
+                href="/practice"
+                className={cn("transition-colors hover:text-foreground/80", pathname === '/practice' ? 'text-foreground' : 'text-foreground/60')}
+                >
+                <Dumbbell className="inline-block h-4 w-4 mr-2" />
+                Practicar
+                </Link>
+            </Button>
+        </>
+    );
+
+    const mobileNavLinks = (
         <>
             <Button variant="ghost" asChild>
                 <SheetClose asChild>
@@ -78,7 +110,7 @@ export function Header() {
         
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-2 text-sm lg:gap-4">
-            {navLinks}
+            {desktopNavLinks}
         </nav>
 
         <div className="flex items-center gap-2">
@@ -129,7 +161,7 @@ export function Header() {
                          </SheetClose>
                     </div>
                     <nav className="flex flex-col gap-4 text-lg">
-                        {navLinks}
+                        {mobileNavLinks}
                     </nav>
                 </SheetContent>
                 </Sheet>
