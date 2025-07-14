@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { BookOpen, Dumbbell, Feather, User, Users, MessageCircle, Menu, X, Video } from 'lucide-react';
+import { BookOpen, Dumbbell, Feather, User, Users, MessageCircle, Menu, X } from 'lucide-react';
 import { Button } from './ui/button';
 import { useUser, type UserLevel } from '@/hooks/use-user';
 import {
@@ -63,15 +63,6 @@ export function Header() {
                 Practicar
                 </Link>
             </Button>
-             <Button variant="ghost" asChild>
-                <Link
-                href="/oral-practice"
-                className={cn("transition-colors hover:text-foreground/80", pathname === '/oral-practice' ? 'text-foreground' : 'text-foreground/60')}
-                >
-                <Video className="inline-block h-4 w-4 mr-2" />
-                Práctica Oral
-                </Link>
-            </Button>
         </>
     );
 
@@ -107,17 +98,6 @@ export function Header() {
                     >
                     <Dumbbell className="inline-block h-4 w-4 mr-2" />
                     Practicar
-                    </Link>
-                </SheetClose>
-            </Button>
-            <Button variant="ghost" asChild>
-                <SheetClose asChild>
-                    <Link
-                    href="/oral-practice"
-                    className={cn("transition-colors hover:text-foreground/80 w-full justify-start", pathname === '/oral-practice' ? 'text-foreground' : 'text-foreground/60')}
-                    >
-                    <Video className="inline-block h-4 w-4 mr-2" />
-                    Práctica Oral
                     </Link>
                 </SheetClose>
             </Button>

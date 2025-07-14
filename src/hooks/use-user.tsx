@@ -3,7 +3,7 @@
 
 import React, { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
 import type { Topic } from '@/lib/data';
-import { topicsData, getRandomInitialTopics } from '@/lib/data';
+import { getRandomInitialTopics } from '@/lib/data';
 
 export type UserLevel = 'beginner' | 'lower-intermediate' | 'upper-intermediate' | 'advanced';
 
