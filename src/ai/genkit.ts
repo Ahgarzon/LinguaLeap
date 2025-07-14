@@ -2,7 +2,6 @@
 
 import {genkit, GenerationCommonConfig} from 'genkit';
 import {googleAI} from '@genkit-ai/googleai';
-import {firebase} from '@genkit-ai/firebase/plugin';
 import defineNextPlugin from '@genkit-ai/next';
 
 const safetySettings: GenerationCommonConfig['safetySettings'] = [
@@ -26,7 +25,6 @@ const safetySettings: GenerationCommonConfig['safetySettings'] = [
 
 export const ai = genkit({
   plugins: [
-    firebase(),
     googleAI(),
     defineNextPlugin({
       // These flows will be available as API endpoints
@@ -37,8 +35,7 @@ export const ai = genkit({
       ],
     }),
   ],
-  flowStateStore: 'firebase',
-  traceStore: 'firebase',
+  logSinks: [],
   enableTracingAndMetrics: true,
   defaultModel: 'googleai/gemini-2.0-flash',
   defaultModelConfig: {
