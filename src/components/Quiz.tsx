@@ -26,7 +26,7 @@ const shuffleArray = (array: any[]) => {
   return newArray;
 };
 
-const QUIZ_LENGTH = 5;
+const QUIZ_LENGTH = 10;
 
 export function Quiz({ allConnections }: QuizProps) {
   const [question, setQuestion] = useState<Question | null>(null);
@@ -34,11 +34,28 @@ export function Quiz({ allConnections }: QuizProps) {
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [score, setScore] = useState(0);
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
+  const [usedQuestionIds, setUsedQuestionIds] = useState<Set<number>>(new Set());
   
   const generateQuestion = useCallback(() => {
-    const shuffled = shuffleArray(allConnections);
-    const correctAnswer = shuffled[0];
-    const options = shuffleArray(shuffled.slice(0, 4));
+    // Filter out connections that have already been used as a correct answer in this session
+    const availableConnections = allConnections.filter(conn => !usedQuestionIds.has(conn.id));
+
+    if (availableConnections.length === 0) {
+      // If all questions have been used, end the quiz.
+      // This is a fallback in case QUIZ_LENGTH > allConnections.length
+      setQuestionsAnswered(QUIZ_LENGTH);
+      return;
+    }
+
+    const shuffledAvailable = shuffleArray(availableConnections);
+    const correctAnswer = shuffledAvailable[0];
+    
+    // Add the new question's ID to the used set
+    setUsedQuestionIds(prev => new Set(prev).add(correctAnswer.id));
+    
+    // For options, we can use any connection, but ensure the correct answer is one of them.
+    const otherOptions = shuffleArray(allConnections.filter(c => c.id !== correctAnswer.id)).slice(0, 3);
+    const options = shuffleArray([correctAnswer, ...otherOptions]);
     
     setQuestion({
       correctAnswer,
@@ -47,11 +64,13 @@ export function Quiz({ allConnections }: QuizProps) {
     });
     setSelectedAnswer(null);
     setIsCorrect(null);
-  }, [allConnections]);
+  }, [allConnections, usedQuestionIds]);
 
   useEffect(() => {
+    // Initial question generation
     generateQuestion();
-  }, [generateQuestion]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allConnections]); // Rerunning generateQuestion would create an infinite loop with useCallback dependencies
 
   const handleAnswer = (answer: Connection) => {
     if (selectedAnswer) return; 
@@ -66,14 +85,30 @@ export function Quiz({ allConnections }: QuizProps) {
   };
 
   const handleNextQuestion = () => {
+    if (questionsAnswered >= QUIZ_LENGTH) {
+        // End of quiz, don't generate a new question
+        return;
+    }
     generateQuestion();
   };
   
   const handleRestart = () => {
     setScore(0);
     setQuestionsAnswered(0);
-    generateQuestion();
+    setUsedQuestionIds(new Set());
+    // We need to re-trigger question generation. A simple way is to wrap it.
+    // The state updates in restart will trigger a re-render which will call generateQuestion if needed
+    // But to be explicit:
+    generateQuestion(); 
   };
+  
+  useEffect(() => {
+    // This effect will run once on mount to set the first question, and handleRestart will call generateQuestion directly
+    if(questionsAnswered === 0 && !question) {
+        generateQuestion();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!question) {
     return (
@@ -85,7 +120,7 @@ export function Quiz({ allConnections }: QuizProps) {
     );
   }
 
-  const isFinished = questionsAnswered >= QUIZ_LENGTH;
+  const isFinished = questionsAnswered >= QUIZ_LENGTH || allConnections.length < 4;
 
   return (
     <Card>
@@ -118,8 +153,8 @@ export function Quiz({ allConnections }: QuizProps) {
                         variant="outline"
                         className={cn(
                         "h-auto py-3 text-base justify-start",
-                        selectedAnswer && option.id === question.correctAnswer.id && "border-primary bg-primary/20 text-primary-foreground hover:bg-primary/30",
-                        selectedAnswer && selectedAnswer.id === option.id && option.id !== question.correctAnswer.id && "border-destructive bg-destructive/20 text-destructive hover:bg-destructive/30"
+                        selectedAnswer && option.id === question.correctAnswer.id && "border-primary bg-primary/20 text-primary hover:bg-primary/30",
+                        selectedAnswer && selectedAnswer.id === option.id && option.id !== question.correctAnswer.id && "border-destructive bg-destructive/20 text-destructive-foreground hover:bg-destructive/30"
                         )}
                         onClick={() => handleAnswer(option)}
                         disabled={!!selectedAnswer}
@@ -135,7 +170,7 @@ export function Quiz({ allConnections }: QuizProps) {
                     <div className="mt-6 text-center p-4 bg-muted/50 rounded-lg">
                         <p className={cn(
                             "text-lg font-bold",
-                            isCorrect ? "text-primary-foreground" : "text-destructive"
+                            isCorrect ? "text-primary" : "text-destructive"
                         )}>
                         {isCorrect ? "Correct!" : "Not quite."}
                         </p>
