@@ -1,5 +1,1 @@
-# Firebase Studio
-
-This is a NextJS starter in Firebase Studio.
-
-To get started, take a look at src/app/page.tsx.
+Esta es una aplicación que permite a los usuarios aprender vcabulario de todos los niveles, con un metodo de conexión mnemotécnica
