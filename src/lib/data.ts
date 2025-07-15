@@ -32,7 +32,7 @@ export const topicsData: Topic[] = [
         mnemonic: 'Mi "suite" de hotel es tan grande que la uso como "case" (estuche) para la ropa.',
         phonetic_spelling: 'sut-keis',
         explanation: 'Imagina una suite de hotel (suite) que usas como estuche gigante (case). La combinación "suite case" te recordará a "suitcase".',
-        example: 'My hotel suite is the perfect case for my clothes, I should pack my suitcase.',
+        example: 'I need to pack my suitcase for my trip tomorrow.',
         slug: 'maleta-suitcase',
         level: 'beginner'
       },
@@ -43,7 +43,7 @@ export const topicsData: Topic[] = [
         mnemonic: 'Para subir al avión, te "pican" (tick) el boleto.',
         phonetic_spelling: 'ti-ket',
         explanation: 'Asocia el sonido "tick" de ticket con la acción de que te "piquen" o perforen el boleto antes de embarcar.',
-        example: 'They have to "tick" your ticket at the gate.',
+        example: 'Don\'t forget your plane ticket!',
         slug: 'boleto-ticket',
         level: 'beginner'
       },
@@ -54,7 +54,7 @@ export const topicsData: Topic[] = [
         mnemonic: 'En la aduana, revisan tus "costumbres" y las de tus maletas.',
         phonetic_spelling: 'kos-toms',
         explanation: 'La palabra "customs" en inglés también significa "costumbres" o "tradiciones". Imagina que el oficial de aduanas es muy curioso sobre tus costumbres personales.',
-        example: 'Tell the customs officer about your local customs when you travel.',
+        example: 'We went through customs without any issues.',
         slug: 'aduana-customs',
         level: 'lower-intermediate'
       },
@@ -62,10 +62,10 @@ export const topicsData: Topic[] = [
         id: 102,
         spanish: 'Itinerario',
         english: 'Itinerary',
-        mnemonic: 'Para no tener que "adivinar-ary", mejor revisa el "itinerario".',
+        mnemonic: 'Para no tener que "ai-tener-ary" que adivinar, revisa el itinerario.',
         phonetic_spelling: 'ai-ti-ne-ra-ri',
-        explanation: 'Usa la rima entre "adivinar-ary" y "itinerary" para recordar que el itinerario te ahorra tener que adivinar qué sigue en tu viaje.',
-        example: 'To avoid having to guess, I always check the itinerary first.',
+        explanation: 'Usa la rima entre "ai-tener-ary" (como "tener que adivinar") y "itinerary" para recordar que el itinerario te ahorra tener que adivinar qué sigue en tu viaje.',
+        example: 'Our itinerary includes a visit to the museum and a walk in the park.',
         slug: 'itinerario-itinerary',
         level: 'lower-intermediate'
       },
@@ -76,7 +76,7 @@ export const topicsData: Topic[] = [
         mnemonic: 'El caballero ("knight") se quedó a "pernoctar" en el castillo.',
         phonetic_spelling: 'stei o-ver-nait',
         explanation: 'La palabra "night" (noche) está dentro de "overnight". Asóciala con un caballero (knight) que pasa la noche en un lugar.',
-        example: 'The brave knight decided to stay overnight in the haunted castle.',
+        example: 'We had to stay overnight in a hotel due to the flight cancellation.',
         slug: 'pernoctar-stay-overnight',
         level: 'advanced'
       }
@@ -94,7 +94,7 @@ export const topicsData: Topic[] = [
         mnemonic: 'En la reunión, el jefe "mide" tu rendimiento con "ting" tings (campanitas).',
         phonetic_spelling: 'mi-ting',
         explanation: 'Piensa que el propósito de una reunión de trabajo es "medir" tu desempeño. El sonido de "mide" en español se parece a "meet" y "ting" a una campana que suena.',
-        example: 'In the next meeting, the boss will "mide" (measure) our performance with a "ting".',
+        example: 'The weekly team meeting is scheduled for 10 AM.',
         slug: 'reunion-meeting',
         level: 'beginner'
       },
@@ -105,7 +105,7 @@ export const topicsData: Topic[] = [
         mnemonic: 'El correo de hoy trae "maíz" (mail).',
         phonetic_spelling: 'meil',
         explanation: 'Imagina una carta o paquete que, en lugar de papeles, contiene granos de maíz. La palabra "maíz" suena casi idéntica a "mail".',
-        example: 'I received some corn (maíz) in the mail today.',
+        example: 'I need to check the mail before I leave.',
         slug: 'correo-mail',
         level: 'beginner'
       },
@@ -116,7 +116,7 @@ export const topicsData: Topic[] = [
         mnemonic: 'Si no cumples el plazo, la línea de tu vida estará "muerta" (dead line).',
         phonetic_spelling: 'ded-lain',
         explanation: 'Asocia la idea de un plazo final con una "línea mortal" que no puedes cruzar. Es una exageración que ayuda a recordar la urgencia.',
-        example: 'I have to finish this report before the deadline, or I\'m dead!',
+        example: 'The deadline for the project is this Friday.',
         slug: 'plazo-deadline',
         level: 'upper-intermediate'
       },
@@ -127,7 +127,7 @@ export const topicsData: Topic[] = [
         mnemonic: 'Usa una "leva" (lever) para levantar tu "era" (age) de prosperidad.',
         phonetic_spelling: 'le-ve-redch',
         explanation: 'Descompón "leverage" en "lever" (palanca) y "age" (era). Imagina usar una palanca financiera para iniciar una nueva era de éxito en los negocios.',
-        example: 'Use financial leverage wisely to start a new age of prosperity.',
+        example: 'We can leverage our connections to get a better deal.',
         slug: 'apalancamiento-leverage',
         level: 'advanced'
       },
@@ -145,7 +145,7 @@ export const topicsData: Topic[] = [
         mnemonic: '¡Qué "escándalo" con tanto "cream" (crema) en la pantalla!',
         phonetic_spelling: 'skrin',
         explanation: 'Asocia el sonido de "screen" con la palabra "escándalo" y "cream" (crema), imaginando una pantalla totalmente manchada de crema.',
-        example: 'It\'s a scandal! Someone put ice cream all over the new screen.',
+        example: 'The new phone has a very bright screen.',
         slug: 'pantalla-screen',
         level: 'beginner'
       },
@@ -156,7 +156,7 @@ export const topicsData: Topic[] = [
         mnemonic: 'Con el teclado, uso la "llave" (key) en el "tablero" (board).',
         phonetic_spelling: 'ki-bord',
         explanation: 'Descompón "keyboard" en "key" (llave) y "board" (tablero). Imagina que cada tecla es una llave que abre una letra en un tablero.',
-        example: 'I use the key to type on the board with my keyboard.',
+        example: 'I need to buy a new keyboard for my computer.',
         slug: 'teclado-keyboard',
         level: 'beginner'
       },
@@ -167,7 +167,7 @@ export const topicsData: Topic[] = [
         mnemonic: '"Up" (arriba) en la "load" (carga). ¡Súbelo a la nube!',
         phonetic_spelling: 'ap-loud',
         explanation: 'Literalmente, "upload" significa "cargar hacia arriba". Asocia "up" con la dirección y "load" con la acción de cargar.',
-        example: 'Go up and manage the server load, then you can upload the file.',
+        example: 'It takes a few minutes to upload a large video file.',
         slug: 'subir-upload',
         level: 'lower-intermediate'
       },
@@ -178,7 +178,7 @@ export const topicsData: Topic[] = [
         mnemonic: 'La "banda" de rock necesita un escenario "ancho" (width) para transmitir todos sus datos.',
         phonetic_spelling: 'band-widz',
         explanation: 'Imagina una "banda" de música que necesita un escenario muy "ancho" ("width") para poder transmitir toda su música (datos) sin problemas. Un escenario más ancho permite que más datos fluyan, al igual que el ancho de banda.',
-        example: 'The rock band needs more stage width to stream their concert; we need more bandwidth.',
+        example: 'We need more bandwidth to support all the users streaming video.',
         slug: 'ancho-de-banda-bandwidth',
         level: 'advanced'
       },
@@ -196,7 +196,7 @@ export const topicsData: Topic[] = [
         mnemonic: 'Una variable es "variable", ¡puede cambiar!',
         phonetic_spelling: 'ver-i-a-bol',
         explanation: 'La palabra es casi idéntica. Simplemente recuerda que en programación, una variable puede contener valores que varían.',
-        example: 'In programming, a variable is a container for a value that is variable.',
+        example: 'Declare a new variable to store the user\'s age.',
         slug: 'variable-variable',
         level: 'beginner'
       },
@@ -207,7 +207,7 @@ export const topicsData: Topic[] = [
         mnemonic: 'Para depurar, tienes que quitarle el "bicho" (bug) al código.',
         phonetic_spelling: 'di-bag',
         explanation: '"Bug" en inglés significa "bicho" o "insecto". Depurar ("debug") es el proceso de encontrar y eliminar estos "bichos" o errores del software.',
-        example: 'I need to find the bug in the code to debug the application.',
+        example: 'I spent all morning trying to debug my code.',
         slug: 'depurar-debug',
         level: 'lower-intermediate'
       },
@@ -218,7 +218,7 @@ export const topicsData: Topic[] = [
         mnemonic: 'Para compilar, "con" "pila" de archivos haces uno solo.',
         phonetic_spelling: 'com-pail',
         explanation: 'Imagina que "compilar" es juntar "con" una "pila" de archivos de código fuente para crear un único archivo ejecutable.',
-        example: 'I will compile the code with this pile of files.',
+        example: 'The code will not run until you compile it.',
         slug: 'compilar-compile',
         level: 'upper-intermediate'
       },
@@ -229,7 +229,7 @@ export const topicsData: Topic[] = [
         phonetic_spelling: 're-po-si-to-ri',
         mnemonic: 'El "repo" es donde "se torean" los grandes códigos.',
         explanation: 'Usa la abreviatura común "repo" para "repository". Imagina un lugar donde los programadores valientes "torean" o manejan código complejo.',
-        example: 'The best coders are chosen to work in this repository.',
+        example: 'He pushed the latest changes to the Git repository.',
         slug: 'repositorio-repository',
         level: 'advanced'
       },
@@ -247,7 +247,7 @@ export const topicsData: Topic[] = [
         mnemonic: 'Mis fortalezas son tan largas como una "trenza" (strengths).',
         phonetic_spelling: 'strengz',
         explanation: 'La pronunciación de "strengths" puede ser difícil. Asóciala con la imagen de una trenza fuerte y larga, que representa tus múltiples fortalezas.',
-        example: 'My list of strengths is as long as a braid (trenza).',
+        example: 'One of my greatest strengths is my ability to solve complex problems.',
         slug: 'fortalezas-strengths',
         level: 'upper-intermediate'
       },
@@ -258,7 +258,7 @@ export const topicsData: Topic[] = [
         mnemonic: 'Mis debilidades son "huecas" (weak) y las confieso esta "semana" (ness).',
         phonetic_spelling: 'wik-ne-ses',
         explanation: '"Weak" suena como "hueco" en español (algo sin fuerza). Imagina que esta semana tienes que rellenar esas debilidades huecas.',
-        example: 'My weaknesses are weak, but I will work on them this week.',
+        example: 'He is aware of his weaknesses and is actively working on them.',
         slug: 'debilidades-weaknesses',
         level: 'upper-intermediate'
       },
@@ -269,7 +269,7 @@ export const topicsData: Topic[] = [
         mnemonic: 'Para "archivar" (achieve) un logro, necesitas un buen "mento" (mentor).',
         phonetic_spelling: 'a-chiv-ment',
         explanation: 'Divide "achievement" en "achieve" (que suena como archivar) y "ment". Imagina que archivas tus logros gracias a un mentor.',
-        example: 'To archive this achievement, I had the help of a great mentor.',
+        example: 'Winning the award was a remarkable achievement for the team.',
         slug: 'logro-achievement',
         level: 'advanced'
       },
@@ -287,7 +287,7 @@ export const topicsData: Topic[] = [
         mnemonic: 'Para la carne de "puerco" (pork), uso el tenedor.',
         phonetic_spelling: 'fork',
         explanation: 'La palabra "fork" suena muy similar a "pork" (cerdo en inglés). Imagina que siempre usas un tenedor para comer cerdo.',
-        example: 'I need a fork for this delicious pork.',
+        example: 'Could you please pass me the fork?',
         slug: 'tenedor-fork',
         level: 'beginner'
       },
@@ -298,7 +298,7 @@ export const topicsData: Topic[] = [
         mnemonic: 'La sopa "es púnica" y se come con cuchara.',
         phonetic_spelling: 'spun',
         explanation: 'Imagina una sopa histórica, de la época de las guerras púnicas. "Es púnica" suena como "spoon".',
-        example: 'This soup is Punic, so I will eat it with a spoon.',
+        example: 'This soup is too hot to eat with a spoon.',
         slug: 'cuchara-spoon',
         level: 'beginner'
       },
@@ -316,7 +316,7 @@ export const topicsData: Topic[] = [
         mnemonic: 'En la factura, "in" (dentro) está mi "voz" (voice) de queja por el precio.',
         phonetic_spelling: 'in-vois',
         explanation: 'Imagina que dentro ("in") de cada factura que emites, grabas un mensaje de voz ("voice") explicando los cargos. "In" + "voice" = "invoice".',
-        example: 'In this invoice, I want to include my voice complaining about the price.',
+        example: 'The company sent an invoice for the services rendered.',
         slug: 'factura-invoice',
         level: 'lower-intermediate'
       },
@@ -327,7 +327,7 @@ export const topicsData: Topic[] = [
         mnemonic: 'Un accionista "comparte" (share) la carga y "sostiene" (hold) la empresa.',
         phonetic_spelling: 'sher-hol-der',
         explanation: '"Shareholder" se compone de "share" (acción, compartir) y "holder" (el que sostiene). El accionista comparte los riesgos y sostiene la compañía.',
-        example: 'A good shareholder must share the responsibilities and hold the company line.',
+        example: 'The shareholders will vote on the new proposal next week.',
         slug: 'accionista-shareholder',
         level: 'advanced'
       }
@@ -345,7 +345,7 @@ export const topicsData: Topic[] = [
         mnemonic: '"Ese" (esse) ensayo es sobre "mí" (say)... ¡mentira!',
         phonetic_spelling: 'e-sei',
         explanation: 'Juega con la pronunciación de "essay". Suena como "ese" en español. Imagina que estás escribiendo un ensayo sobre "ese" tema.',
-        example: '"Ese" essay is not about what you say.',
+        example: 'I have to write a 500-word essay for my English class.',
         slug: 'ensayo-essay',
         level: 'lower-intermediate'
       },
@@ -356,7 +356,7 @@ export const topicsData: Topic[] = [
         mnemonic: 'Mi tesis es tan importante como "la tesis" de un detective.',
         phonetic_spelling: 'zi-sis',
         explanation: 'La palabra es casi idéntica en ambos idiomas, pero en inglés se pronuncia "zisis". La conexión es directa.',
-        example: 'My thesis is as important as a detective\'s thesis.',
+        example: 'Her doctoral thesis was on the topic of quantum physics.',
         slug: 'tesis-thesis',
         level: 'advanced'
       }
@@ -374,7 +374,7 @@ export const topicsData: Topic[] = [
         mnemonic: '"No" (know) tendrás "ventaja" (ledge) si no tienes conocimiento.',
         phonetic_spelling: 'no-ledch',
         explanation: 'Divide "knowledge" en "know" (saber/no) y "ledge" (borde/ventaja). Sin saber ("know"), no tienes una ventaja ("ledge") sobre los demás.',
-        example: 'You will have no edge if you have no knowledge.',
+        example: 'He has a vast knowledge of ancient history.',
         slug: 'conocimiento-knowledge',
         level: 'upper-intermediate'
       },
@@ -385,7 +385,7 @@ export const topicsData: Topic[] = [
         mnemonic: 'Para tener perspicacia, mira "adentro" (in) de la "vista" (sight).',
         phonetic_spelling: 'in-sait',
         explanation: 'Descompón "insight": "in" (dentro) y "sight" (vista). Tener perspicacia es la capacidad de ver dentro de un problema.',
-        example: 'To gain insight, you must look in and use your inner sight.',
+        example: 'The book provides valuable insight into the author\'s life.',
         slug: 'perspicacia-insight',
         level: 'advanced'
       }
@@ -400,8 +400,8 @@ export function getRandomInitialTopics(): Topic[] {
 
     const shuffledConnections = [...allConnections].sort(() => 0.5 - Math.random());
     
-    // Get a random number of connections (e.g., between 5 and 10)
-    const selectedConnections = shuffledConnections.slice(0, Math.floor(Math.random() * 6) + 5);
+    // Get a random number of connections (between 10 and 15)
+    const selectedConnections = shuffledConnections.slice(0, Math.floor(Math.random() * 6) + 10);
 
     const newTopics: { [slug: string]: Topic } = {};
 
@@ -414,7 +414,10 @@ export function getRandomInitialTopics(): Topic[] {
                 connections: [],
             };
         }
-        newTopics[conn.topicSlug].connections.push(conn);
+        // Ensure we don't add duplicate connections if somehow the shuffle is weird
+        if (!newTopics[conn.topicSlug].connections.some(c => c.id === conn.id)) {
+            newTopics[conn.topicSlug].connections.push(conn);
+        }
     }
 
     return Object.values(newTopics);

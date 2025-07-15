@@ -20,7 +20,7 @@ const GenerateExampleSentenceInputSchema = z.object({
 export type GenerateExampleSentenceInput = z.infer<typeof GenerateExampleSentenceInputSchema>;
 
 const GenerateExampleSentenceOutputSchema = z.object({
-  exampleSentence: z.string().describe('An example sentence using the mnemonic connection.'),
+  exampleSentences: z.array(z.string()).describe('An array of 5 distinct example sentences using the English word in different contexts.'),
 });
 export type GenerateExampleSentenceOutput = z.infer<typeof GenerateExampleSentenceOutputSchema>;
 
@@ -32,16 +32,14 @@ export async function generateExampleSentence(
 
 const prompt = ai.definePrompt({
   name: 'generateExampleSentencePrompt',
-  model: googleAI.model('gemini-2.0-flash'),
+  model: 'googleai/gemini-2.0-flash',
   input: {schema: GenerateExampleSentenceInputSchema},
   output: {schema: GenerateExampleSentenceOutputSchema},
   prompt: `You are a helpful language learning assistant.
 
-You are helping a user learn the connection between the Spanish word "{{spanishWord}}" and the English word "{{englishWord}}".
+You are helping a user learn the English word "{{englishWord}}".
 
-The mnemonic connection between these words is: "{{mnemonicConnection}}".
-
-Generate one example sentence that uses both the Spanish and English words in a way that demonstrates the mnemonic connection. The sentence should be clear, concise, and easy to understand for English language learners.
+Generate an array of 5 distinct and clear example sentences that use the English word "{{englishWord}}" in a real-world context. The sentences should be easy to understand for an English language learner. Do NOT use the Spanish word or the mnemonic connection in the examples.
 `,
 });
 

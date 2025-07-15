@@ -44,6 +44,7 @@ export default function ConnectionPage() {
             </div>
             <PronunciationPlayer
               englishWord={connection.english}
+              mnemonic={connection.mnemonic}
             />
           </div>
         </CardHeader>

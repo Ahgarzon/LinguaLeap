@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import type { Connection } from '@/lib/data';
-import { getAIExample } from '@/app/actions';
+import { getAIExamples } from '@/app/actions';
 import { Button } from '@/components/ui/button';
 import { Sparkles, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -13,15 +13,15 @@ interface GenerateExampleProps {
 }
 
 export function GenerateExample({ connection }: GenerateExampleProps) {
-  const [example, setExample] = useState(connection.example);
+  const [examples, setExamples] = useState<string[]>([connection.example]);
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
 
   const handleGenerate = () => {
     startTransition(async () => {
-      const result = await getAIExample(connection);
-      if (result.success && result.example) {
-        setExample(result.example);
+      const result = await getAIExamples(connection);
+      if (result.success && result.examples) {
+        setExamples(result.examples);
       } else {
         toast({
           variant: 'destructive',
@@ -34,12 +34,16 @@ export function GenerateExample({ connection }: GenerateExampleProps) {
 
   return (
     <div>
-      <h3 className="text-lg font-semibold mb-2">Example Sentence</h3>
-      <Alert className="bg-primary/10 border-primary/20">
-        <AlertDescription className="text-lg text-primary italic">
-          "{example}"
-        </AlertDescription>
-      </Alert>
+      <h3 className="text-lg font-semibold mb-2">Example Sentences</h3>
+      <div className="space-y-3">
+        {examples.map((ex, index) => (
+           <Alert key={index} className="bg-primary/10 border-primary/20">
+             <AlertDescription className="text-lg text-primary italic">
+               "{ex}"
+             </AlertDescription>
+           </Alert>
+        ))}
+      </div>
       <div className="mt-4 flex justify-end">
         <Button onClick={handleGenerate} disabled={isPending}>
           {isPending ? (
@@ -47,7 +51,7 @@ export function GenerateExample({ connection }: GenerateExampleProps) {
           ) : (
             <Sparkles className="mr-2 h-4 w-4 text-accent" />
           )}
-          {isPending ? 'Generating...' : 'Generate Another'}
+          {isPending ? 'Generating...' : 'Generate New Examples'}
         </Button>
       </div>
     </div>

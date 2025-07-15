@@ -4,14 +4,14 @@ import { generateExampleSentence } from '@/ai/flows/generate-example-sentence';
 import { generateLearningPlan, type GenerateLearningPlanOutput } from '@/ai/flows/generate-learning-plan';
 import type { Connection, UserLevel } from '@/lib/data';
 
-export async function getAIExample(connection: Omit<Connection, 'id' | 'slug' | 'phonetic_spelling' | 'level'>) {
+export async function getAIExamples(connection: Omit<Connection, 'id' | 'slug' | 'phonetic_spelling' | 'level'>) {
   try {
     const result = await generateExampleSentence({
       spanishWord: connection.spanish,
       englishWord: connection.english,
       mnemonicConnection: connection.mnemonic,
     });
-    return { success: true, example: result.exampleSentence };
+    return { success: true, examples: result.exampleSentences };
   } catch (error) {
     console.error('AI example generation failed:', error);
     let errorMessage = 'An unknown error occurred.';
@@ -22,7 +22,7 @@ export async function getAIExample(connection: Omit<Connection, 'id' | 'slug' | 
             errorMessage = error.message;
         }
     }
-    return { success: false, error: `Failed to generate a new example. Reason: ${errorMessage}` };
+    return { success: false, error: `Failed to generate new examples. Reason: ${errorMessage}` };
   }
 }
 

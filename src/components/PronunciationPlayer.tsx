@@ -7,10 +7,10 @@ import { useToast } from '@/hooks/use-toast';
 
 interface PronunciationPlayerProps {
   englishWord: string;
-  // We no longer need spanishWord and mnemonic for TTS
+  mnemonic: string;
 }
 
-export function PronunciationPlayer({ englishWord }: PronunciationPlayerProps) {
+export function PronunciationPlayer({ englishWord, mnemonic }: PronunciationPlayerProps) {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const { toast } = useToast();
 
@@ -38,19 +38,32 @@ export function PronunciationPlayer({ englishWord }: PronunciationPlayerProps) {
     }
 
     setIsSpeaking(true);
-    const utterance = new SpeechSynthesisUtterance(englishWord);
     
-    // Find an English voice for better pronunciation
+    // Create utterance for the English word
+    const utteranceEnglish = new SpeechSynthesisUtterance(englishWord);
     const voices = window.speechSynthesis.getVoices();
     const englishVoice = voices.find(voice => voice.lang.startsWith('en-'));
     if (englishVoice) {
-        utterance.voice = englishVoice;
+      utteranceEnglish.voice = englishVoice;
     }
+
+    // Create utterance for the mnemonic in Spanish
+    const utteranceMnemonic = new SpeechSynthesisUtterance(mnemonic);
+    const spanishVoice = voices.find(voice => voice.lang.startsWith('es-'));
+     if (spanishVoice) {
+      utteranceMnemonic.voice = spanishVoice;
+    }
+
+    utteranceEnglish.onend = () => {
+      // Play mnemonic after the English word is spoken
+      window.speechSynthesis.speak(utteranceMnemonic);
+    };
     
-    utterance.onend = () => {
+    utteranceMnemonic.onend = () => {
       setIsSpeaking(false);
     };
-    utterance.onerror = (event) => {
+
+    utteranceMnemonic.onerror = utteranceEnglish.onerror = (event) => {
       console.error('SpeechSynthesis Error: ', event.error);
       toast({
         variant: 'destructive',
@@ -60,13 +73,14 @@ export function PronunciationPlayer({ englishWord }: PronunciationPlayerProps) {
       setIsSpeaking(false);
     };
     
-    window.speechSynthesis.speak(utterance);
+    // Start speaking the English word
+    window.speechSynthesis.speak(utteranceEnglish);
   };
 
   return (
     <Button onClick={handlePlay} disabled={isSpeaking} variant="outline" size="icon">
       {isSpeaking ? <Loader2 className="h-5 w-5 animate-spin" /> : <Volume2 className="h-5 w-5" />}
-      <span className="sr-only">Listen to pronunciation</span>
+      <span className="sr-only">Listen to pronunciation and mnemonic</span>
     </Button>
   );
 }
