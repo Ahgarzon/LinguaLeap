@@ -34,7 +34,7 @@ import {
     AlertDialogTitle,
   } from "@/components/ui/alert-dialog"
 
-type View = 'list' | 'new' | 'pin' | 'language' | 'test' | 'delete';
+type View = 'list' | 'new' | 'pin' | 'language' | 'test' | 'delete' | 'setPinForOldUser';
 
 export function WelcomeWizard({ triggerButton = false }: { triggerButton?: boolean }) {
   const { users, setCurrentUser, addUser, currentUser, updateCurrentUser, deleteUser } = useUser();
@@ -45,12 +45,16 @@ export function WelcomeWizard({ triggerButton = false }: { triggerButton?: boole
   const [nativeLanguage, setNativeLanguage] = useState('');
   const [userToDelete, setUserToDelete] = useState<UserProfile | null>(null);
   const [deletePin, setDeletePin] = useState('');
+  const [userToSetPin, setUserToSetPin] = useState<UserProfile | null>(null);
 
   const { toast } = useToast();
 
   const handleSelectUser = (user: UserProfile) => {
     setCurrentUser(user);
-    if (!user.nativeLanguage) {
+    if (!user.pin) {
+      setUserToSetPin(user);
+      setView('setPinForOldUser');
+    } else if (!user.nativeLanguage) {
       setView('language');
     } else if (!user.level) {
       setView('test');
@@ -70,6 +74,27 @@ export function WelcomeWizard({ triggerButton = false }: { triggerButton?: boole
             variant: 'destructive',
             title: 'Error',
             description: 'Por favor, ingresa un nombre y un PIN de 4 dígitos.',
+        })
+    }
+  };
+
+  const handleSetPinForOldUser = () => {
+    if (userToSetPin && newUserPin.length === 4) {
+        updateCurrentUser({ ...userToSetPin, pin: newUserPin });
+        setNewUserPin('');
+        setUserToSetPin(null);
+        if (!currentUser?.nativeLanguage) {
+            setView('language');
+        } else if (!currentUser?.level) {
+            setView('test');
+        } else {
+            setIsOpen(false);
+        }
+    } else {
+        toast({
+            variant: 'destructive',
+            title: 'Error',
+            description: 'Por favor, ingresa un PIN de 4 dígitos.',
         })
     }
   };
@@ -125,6 +150,30 @@ export function WelcomeWizard({ triggerButton = false }: { triggerButton?: boole
 
   const renderContent = () => {
     switch (view) {
+      case 'setPinForOldUser':
+        return (
+            <>
+              <DialogHeader>
+                <DialogTitle>Crear PIN para {userToSetPin?.name}</DialogTitle>
+                <DialogDescription>
+                  Este perfil necesita un PIN de 4 dígitos para continuar y para protegerlo.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="flex flex-col items-center gap-4 py-4">
+                <InputOTP maxLength={4} value={newUserPin} onChange={setNewUserPin}>
+                  <InputOTPGroup>
+                    <InputOTPSlot index={0} />
+                    <InputOTPSlot index={1} />
+                    <InputOTPSlot index={2} />
+                    <InputOTPSlot index={3} />
+                  </InputOTPGroup>
+                </InputOTP>
+              </div>
+              <DialogFooter>
+                <Button onClick={handleSetPinForOldUser} disabled={newUserPin.length < 4}>Guardar PIN y Continuar</Button>
+              </DialogFooter>
+            </>
+        );
       case 'test':
         return <PlacementTest onComplete={handleTestComplete} />;
       case 'language':
@@ -263,7 +312,7 @@ export function WelcomeWizard({ triggerButton = false }: { triggerButton?: boole
         <AlertDialogHeader>
             <AlertDialogTitle>¿Eliminar el perfil de "{userToDelete?.name}"?</AlertDialogTitle>
             <AlertDialogDescription>
-            Esta acción no se puede deshacer. Para confirmar, por favor introduce el PIN de 4 dígitos de este perfil.
+            Esta acción no se puede deshacer. Para confirmar, por favor introduce el PIN de 4 dígitos de este perfil. Si es un perfil antiguo sin PIN, no podrás eliminarlo hasta que inicies sesión y le asignes uno.
             </AlertDialogDescription>
         </AlertDialogHeader>
         <div className="flex flex-col items-center gap-4 py-4">
@@ -278,7 +327,7 @@ export function WelcomeWizard({ triggerButton = false }: { triggerButton?: boole
         </div>
         <AlertDialogFooter>
             <AlertDialogCancel onClick={() => setDeletePin('')}>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteUser} disabled={deletePin.length < 4} className="bg-destructive hover:bg-destructive/90">
+            <AlertDialogAction onClick={handleDeleteUser} disabled={deletePin.length < 4 || !userToDelete?.pin} className="bg-destructive hover:bg-destructive/90">
                 Eliminar Perfil
             </AlertDialogAction>
         </AlertDialogFooter>
@@ -287,8 +336,11 @@ export function WelcomeWizard({ triggerButton = false }: { triggerButton?: boole
   )
 
   // If user exists but something is missing, force the dialog open
-  if (currentUser && (!currentUser.nativeLanguage || !currentUser.level) && !isOpen && !triggerButton) {
-      if (!currentUser.nativeLanguage) {
+  if (currentUser && (!currentUser.pin || !currentUser.nativeLanguage || !currentUser.level) && !isOpen && !triggerButton) {
+      if (!currentUser.pin) {
+          setUserToSetPin(currentUser);
+          setView('setPinForOldUser');
+      } else if (!currentUser.nativeLanguage) {
           setView('language');
       } else {
           setView('test');

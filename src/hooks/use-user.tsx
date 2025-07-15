@@ -93,7 +93,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         updateCurrentUser({ topics: newTopics });
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentUser, users]);
+  }, [currentUser]);
   
   const clearCurrentUser = () => {
     setCurrentUser(null);

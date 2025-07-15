@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -43,7 +44,7 @@ export async function generateLearningPlan(
 
 const prompt = ai.definePrompt({
   name: 'generateLearningPlanPrompt',
-  model: 'googleai/gemini-1.5-flash-latest',
+  model: 'googleai/gemini-2.0-flash',
   input: {schema: GenerateLearningPlanInputSchema},
   output: {schema: GenerateLearningPlanOutputSchema},
   prompt: `You are an expert and highly creative language learning assistant for an app called LinguaLeap. Your specialty is creating personalized vocabulary plans with powerful, witty, and unforgettable mnemonic devices to connect English words with words in the user's native language.
