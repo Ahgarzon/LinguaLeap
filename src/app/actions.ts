@@ -2,7 +2,6 @@
 
 import { generateExampleSentence } from '@/ai/flows/generate-example-sentence';
 import { generateLearningPlan, type GenerateLearningPlanOutput } from '@/ai/flows/generate-learning-plan';
-import { textToSpeech } from '@/ai/flows/text-to-speech';
 import type { Connection, UserLevel } from '@/lib/data';
 
 export async function getAIExample(connection: Omit<Connection, 'id' | 'slug' | 'phonetic_spelling' | 'level'>) {
@@ -27,24 +26,6 @@ export async function getAIExample(connection: Omit<Connection, 'id' | 'slug' | 
   }
 }
 
-export async function getPronunciation(text: string) {
-  try {
-    const result = await textToSpeech({ text });
-    return { success: true, audioDataUri: result.audioDataUri };
-  } catch (error) {
-    console.error('Text-to-speech generation failed:', error);
-    let errorMessage = 'An unknown error occurred.';
-    if (error instanceof Error) {
-        if (error.message.toLowerCase().includes('quota')) {
-            errorMessage = 'The daily limit for pronunciations has been reached. Please try again tomorrow.';
-        } else {
-            errorMessage = error.message;
-        }
-    }
-    return { success: false, error: `Failed to generate pronunciation. Reason: ${errorMessage}` };
-  }
-}
-
 export async function getLearningPlan(goal: string, level: UserLevel, nativeLanguage: string): Promise<{ success: boolean; data?: GenerateLearningPlanOutput; error?: string }> {
     if (!goal) {
         return { success: false, error: "Please provide a learning goal." };
@@ -59,8 +40,8 @@ export async function getLearningPlan(goal: string, level: UserLevel, nativeLang
         console.error('Learning plan generation failed:', error);
         let errorMessage = 'An unknown error occurred.';
         if (error instanceof Error) {
-            if (error.message.toLowerCase().includes('quota')) {
-                errorMessage = 'Sorry, I have reached my idea generation limit for today. Please try again tomorrow.';
+            if (error.message.toLowerCase().includes('quota') || error.message.toLowerCase().includes('overloaded')) {
+                errorMessage = 'Sorry, the AI assistant is currently experiencing high demand. Please try again in a few moments.';
             } else {
                 errorMessage = error.message;
             }

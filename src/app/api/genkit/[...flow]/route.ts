@@ -4,7 +4,6 @@ import '@/ai/genkit';
 const nextPlugin = defineNextPlugin({
   flows: [
     'generateExampleSentenceFlow',
-    'textToSpeechFlow',
     'generateLearningPlanFlow',
   ],
 });

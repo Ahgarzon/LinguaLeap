@@ -8,7 +8,7 @@ import { useUser } from '@/hooks/use-user';
 import { WelcomeWizard } from '@/components/WelcomeWizard';
 import { FormEvent, useState, useTransition, useRef, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
-import { getLearningPlan, getPronunciation } from '@/app/actions';
+import { getLearningPlan } from '@/app/actions';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import type { GenerateLearningPlanOutput } from '@/ai/flows/generate-learning-plan';
 import { Separator } from '@/components/ui/separator';
@@ -26,8 +26,7 @@ export default function AssistantPage() {
   const router = useRouter();
 
   // Pronunciation state
-  const [audioStates, setAudioStates] = useState<{ [key: string]: 'idle' | 'loading' | 'playing' }>({});
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [speakingState, setSpeakingState] = useState<{ [key: string]: boolean }>({});
   
   // Effect to save the plan once it's generated
   useEffect(() => {
@@ -74,23 +73,36 @@ export default function AssistantPage() {
     });
   };
 
-  const handlePlayPronunciation = async (wordKey: string, textToSpeak: string) => {
-    setAudioStates(prev => ({ ...prev, [wordKey]: 'loading' }));
-    
-    const result = await getPronunciation(textToSpeak);
-    if (result.success && result.audioDataUri) {
-      if (audioRef.current) {
-        audioRef.current.src = result.audioDataUri;
-        audioRef.current.play().catch(e => console.error("Audio playback failed:", e));
-        setAudioStates(prev => ({ ...prev, [wordKey]: 'playing' }));
-        audioRef.current.onended = () => {
-             setAudioStates(prev => ({ ...prev, [wordKey]: 'idle' }));
-        }
-      }
-    } else {
-        toast({ variant: 'destructive', title: 'Error', description: result.error });
-        setAudioStates(prev => ({ ...prev, [wordKey]: 'idle' }));
+  const handlePlayPronunciation = (wordKey: string, textToSpeak: string) => {
+    if (typeof window === 'undefined' || !window.speechSynthesis) {
+        toast({ variant: 'destructive', title: 'Error', description: 'Your browser does not support speech synthesis.' });
+        return;
     }
+
+    // Stop any currently speaking utterance
+    window.speechSynthesis.cancel();
+
+    setSpeakingState(prev => ({...Object.fromEntries(Object.keys(prev).map(k => [k, false])), [wordKey]: true }));
+
+    const utterance = new SpeechSynthesisUtterance(textToSpeak);
+    
+    // Find an English voice
+    const voices = window.speechSynthesis.getVoices();
+    const englishVoice = voices.find(voice => voice.lang.startsWith('en-'));
+    if (englishVoice) {
+        utterance.voice = englishVoice;
+    }
+    
+    utterance.onend = () => {
+        setSpeakingState(prev => ({ ...prev, [wordKey]: false }));
+    };
+    utterance.onerror = (event) => {
+        console.error('Speech synthesis error:', event.error);
+        toast({ variant: 'destructive', title: 'Error', description: 'An error occurred during speech playback.' });
+        setSpeakingState(prev => ({ ...prev, [wordKey]: false }));
+    };
+
+    window.speechSynthesis.speak(utterance);
   };
 
 
@@ -100,7 +112,6 @@ export default function AssistantPage() {
 
   return (
     <div className="container mx-auto max-w-4xl py-8 px-4 md:px-6">
-      <audio ref={audioRef} className="hidden" />
       <section className="mb-10">
         <Card className="bg-muted/30">
           <CardHeader>
@@ -157,8 +168,8 @@ export default function AssistantPage() {
             <div className="space-y-6">
               {plan.connections.map((conn, index) => {
                 const wordKey = `${conn.english}-${index}`;
-                const audioState = audioStates[wordKey] || 'idle';
-                const textToSpeak = `In English: ${conn.english}. Remember this connection: ${conn.mnemonic}`;
+                const isSpeaking = speakingState[wordKey] || false;
+                const textToSpeak = conn.english;
 
                 return (
                   <Card key={wordKey} className="overflow-hidden">
@@ -168,8 +179,8 @@ export default function AssistantPage() {
                             <p className="text-sm text-muted-foreground">{conn.spanish}</p>
                             <CardTitle className="text-4xl font-headline text-primary">{conn.english}</CardTitle>
                         </div>
-                         <Button onClick={() => handlePlayPronunciation(wordKey, textToSpeak)} disabled={audioState === 'loading'} variant="outline" size="icon">
-                            {audioState === 'loading' ? <Loader2 className="h-5 w-5 animate-spin" /> : <Volume2 className="h-5 w-5" />}
+                         <Button onClick={() => handlePlayPronunciation(wordKey, textToSpeak)} disabled={isSpeaking} variant="outline" size="icon">
+                            {isSpeaking ? <Loader2 className="h-5 w-5 animate-spin" /> : <Volume2 className="h-5 w-5" />}
                             <span className="sr-only">Listen</span>
                         </Button>
                       </div>
